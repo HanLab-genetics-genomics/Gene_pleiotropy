@@ -1,0 +1,21 @@
+colector,date,source,description
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Human_pooled_domains
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Pooled_loop_anchors
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Dixon_hESC_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Dixon_IMR90_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_GM12878_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_HeLa_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_HMEC_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_HUVEC_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_IMR90_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_K562_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_KBM7_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_NHEK_Domain
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_GM12878_Loop_anchor
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_HeLa_Loop_anchor
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_HMEC_Loop_anchor
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_HUVEC_Loop_anchor
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_IMR90_Loop_anchor
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_K562_Loop_anchor
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_KBM7_Loop_anchor
+Ruth B. McCole,"July 10, 2018",Cell Rep. 2018 Jul 10;24(2):479-488.,Rao_NHEK_Loop_anchor

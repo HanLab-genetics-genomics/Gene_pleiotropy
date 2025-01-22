@@ -1,0 +1,6 @@
+filename,description
+hESC.bed,hESC ATAC peaks
+IMR90.bed,IMR90 ATAC peaks
+GM12878.bed,GM12878 ATAC peaks
+K562.bed,K562 ATAC peaks
+HeLa.bed,HeLa ATAC peaks

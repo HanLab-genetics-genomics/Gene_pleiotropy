@@ -1,0 +1,7 @@
+colector,date,source,description
+Suhas S.P. Rao,2014.11,"Cell vol. 159,7 (2014): 1665-80.",Subcompartment_A1
+Suhas S.P. Rao,2014.11,"Cell vol. 159,7 (2014): 1665-80.",Subcompartment_A2
+Suhas S.P. Rao,2014.11,"Cell vol. 159,7 (2014): 1665-80.",Subcompartment_B1
+Suhas S.P. Rao,2014.11,"Cell vol. 159,7 (2014): 1665-80.",Subcompartment_B2
+Suhas S.P. Rao,2014.11,"Cell vol. 159,7 (2014): 1665-80.",Subcompartment_B3
+Suhas S.P. Rao,2014.11,"Cell vol. 159,7 (2014): 1665-80.",Subcompartment_B4

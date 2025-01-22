@@ -1,0 +1,7 @@
+filename	size
+compartment_A1.bed	490
+compartment_A2.bed	1249
+compartment_B1.bed	896
+compartment_B2.bed	504
+compartment_B3.bed	685
+compartment_B4.bed	25

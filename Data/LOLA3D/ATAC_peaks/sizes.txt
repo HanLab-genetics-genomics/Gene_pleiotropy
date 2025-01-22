@@ -1,0 +1,6 @@
+filename	size
+GM12878.bed	85631
+HeLa.bed	48574
+IMR90.bed	68236
+K562.bed	47203
+hESC.bed	127090

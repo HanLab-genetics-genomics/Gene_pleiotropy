@@ -1,0 +1,6 @@
+colector,date,source,description
+ATACdb,ATACdb  v1.03,ATACdb  v1.03,hESC ATAC peaks
+ATACdb,ATACdb  v1.03,ATACdb  v1.03,IMR90 ATAC peaks
+ATACdb,ATACdb  v1.03,ATACdb  v1.03,GM12878 ATAC peaks
+ATACdb,ATACdb  v1.03,ATACdb  v1.03,K562 ATAC peaks
+ATACdb,ATACdb  v1.03,ATACdb  v1.03,HeLa ATAC peaks
