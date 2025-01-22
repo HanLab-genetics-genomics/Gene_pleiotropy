@@ -1,0 +1,2 @@
+collector	date	source	description
+fhalbritter	2015-09-14	/data/groups/lab_bock/shared/resources/regions/LOLAExt//hg19/roadmap_epigenomics	Converted via liftOver from hg19 to hg38 (mapped: 182987304, unmapped: 109682). Only chr+start+end maintained

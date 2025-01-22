@@ -1,0 +1,17 @@
+index created by:
+1. list files:  
+ cd regions; ln -1 > ../index.tmp
+2. edit (with openoffice) to annotate: id, filename, protocol, dataType, analysisType, antibody, donor
+3. download donor annotation from roadmap:
+ wget http://egg2.wustl.edu/roadmap/data/byFileType/metadata/EID_metadata.tab
+4. use R to merge tables:
+ indexTmp <- read.table("index.tmp",header=TRUE,stringsAsFactors=FALSE)
+ eid <- read.table("EID_metadata.tab",sep="\t",header=TRUE,comment.char="`",allowEscapes=FALSE,stringsAsFactors=FALSE,row.names=1)
+ capit <- function(x) paste0(toupper(substring(x, 1, 1)), substring(x, 2, nchar(x)))
+ x <- tolower(colnames(eid))
+ x <- sapply(strsplit(x, "\\."), function(x) paste(capit(x), collapse=""))
+ x <- sapply(strsplit(x, "\\_"), function(x) paste(capit(x), collapse=""))
+ x <- paste0(tolower(substring(x, 1, 1)), substring(x, 2, nchar(x)))
+ colnames(eid) <- x
+ merged <- data.frame(indexTmp,eid[indexTmp$donor,setdiff(x,c("color"))])
+ write.table(merged,file="index.txt",sep="\t",col.names=TRUE,row.names=FALSE,quote=FALSE)
