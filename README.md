@@ -22,23 +22,24 @@ Input datasets and processed files required to reproduce the results.
 | Gene locations (NCBI 37.3) |  [NCBI37.3.gene.loc](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/NCBI37.3.gene.loc) |
 | **Datasets for [Structural and evolutionary characteristics]** |  | 
 | Tissue specific τ index and gene expression data |  [Tau_gene_V8.csv](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/Tau_gene_V8.csv) |
-| Processed results of Random forest analysis |  [forest_13var_seed123_250114.RData](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/forest_13var_seed123_250114.RData) |
-| Processed results of single mediation analysis |  [Single_mediation.RData](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/mediation_list_pn.RData) |
+| Processed results of Random forest analysis (unrar first) |  [Randomforest](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/forest_13var_seed123_250114.RData) |
+| Processed results of single mediation analysis (unrar first) |  [Single_mediation.rar](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/mediation_list_pn.rar) |
 | Processed results of multiple mediation analysis |  [Multiple_mediation.RData](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/lavaan_multiple_mediation_singlesig_pn.RData) |
 | **Datasets for [Gene regulatory circuitry]** |  | 
 | Proportion data of cis-eGenes and cis-sGenes |  [cis_esqtl.RData](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/cis_esqtl.RData) |
 | Trans-eQTL data |  [Trans-eQTL](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/eqtlgen_transeqtl.txt) |
 | DNA-binding RNA polymerase II TFs |  [TFC2_16102023b.tsv](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/TFC2_16102023b.tsv) |
-| Enhancer data |  [Enhancer](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/genehancer_all.csv) |
+| Enhancer data (unrar first) |  [Enhancer](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/genehancer_all.rar) |
 | Enhancer annotaion data |  [Enhancer_annotation](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/genehancer_annotation.csv) |
 | Protein-protein interactions |  [connectivity.txt](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/connectivity.txt) |
 | **Datasets for [Epigenomic modifications]** |  |
 | Gene region coordinates |  [bed_data](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/bed_data) |
 | Chromatin 3D freature source |  [three_d_data.xlsx](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/three_d_data.xlsx) |
 | Chromatin 3D freature dataset for LOLA analysis |  [LOLA3D](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/LOLA3D) |
-| UCSC features and Roadmap epigenomic data for LOLA analysis |  [LOLACore](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/LOLACore) |
+| UCSC features for LOLA analysis (download first) |  [LOLACore - UCSC features](http://big.databio.org/regiondb/LOLACoreCaches_180412.tgz) |
+| Roadmap epigenomic data for LOLA analysis (download first) |  [LOLACore - Roadmap epigenomics](http://big.databio.org/regiondb/LOLARoadmap_180423.tgz) |
 | **Datasets for [Functional characterization]** |  | 
-| Gene effect score |  [CRISPRGeneEffect.csv](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/CRISPRGeneEffect.csv) |
+| Gene effect score (unrar first) |  [CRISPRGeneEffect](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/CRISPRGeneEffect) |
 | Metabolic processes in Last Universal Common Ancestor (LUCA) |  [LUCA](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/41559_2024_2461_MOESM4_ESM.tsv) |
 | **Datasets for [Drug development]** |  | 
 | FDA approved drug targets |  [FDA approved drug targets](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/fda_2023.xlsx) |
