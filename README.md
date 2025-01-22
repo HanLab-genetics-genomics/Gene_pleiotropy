@@ -36,8 +36,8 @@ Input datasets and processed files required to reproduce the results.
 | Gene region coordinates |  [bed_data](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/bed_data) |
 | Chromatin 3D freature source |  [three_d_data.xlsx](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/three_d_data.xlsx) |
 | Chromatin 3D freature dataset for LOLA analysis |  [LOLA3D](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/LOLA3D) |
-| UCSC features for LOLA analysis (download first) |  [LOLACore_UCSC features](http://big.databio.org/regiondb/LOLACoreCaches_180412.tgz) |
-| Roadmap epigenomic data for LOLA analysis (download first) |  [LOLACore_Roadmap epigenomics](http://big.databio.org/regiondb/LOLARoadmap_180423.tgz) |
+| UCSC features for LOLA analysis (copy the link and download first) |  [LOLACore_UCSC features](http://big.databio.org/regiondb/LOLACoreCaches_180412.tgz) |
+| Roadmap epigenomic data for LOLA analysis (copy the link and download first) |  [LOLACore_Roadmap epigenomics](http://big.databio.org/regiondb/LOLARoadmap_180423.tgz) |
 | **Datasets for [Functional characterization]** |  | 
 | Gene effect score (unrar first) |  [CRISPRGeneEffect](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/CRISPRGeneEffect) |
 | Metabolic processes in Last Universal Common Ancestor (LUCA) |  [LUCA](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/41559_2024_2461_MOESM4_ESM.tsv) |
