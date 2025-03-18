@@ -10,7 +10,7 @@ age7_name <- c("Euteleostomi", "Tetrapoda", "Amniota", "Mammalia", "Theria", "Eu
 x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
 
-setwd("Data/")
+setwd("Data")
 figure_file <- "Figure"
 
 #2 load data--------------------------
