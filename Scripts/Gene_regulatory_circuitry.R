@@ -10,8 +10,8 @@ age7_name <- c("Euteleostomi", "Tetrapoda", "Amniota", "Mammalia", "Theria", "Eu
 x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
 
-setwd("/home/liumy/pleiotropy/github/data/")
-figure_file <- "/home/liumy/pleiotropy/github/Figure"
+setwd("Data")
+figure_file <- "Figure"
 
 #2 load data--------------------------
 load("pleiotropy_maindata.RData")
@@ -55,8 +55,8 @@ percent_plot <- function(data = egenes_prop[1:3,49],
 #wget -c https://storage.googleapis.com/adult-gtex/bulk-qtl/v8/single-tissue-cis-qtl/GTEx_Analysis_v8_eQTL.tar
 #wget -c https://storage.googleapis.com/adult-gtex/bulk-qtl/v8/single-tissue-cis-qtl/GTEx_Analysis_v8_sQTL.tar
 ####load data (download the data or load the revised data provided)-----------------
-prop_data <- lapply(list("/home/liumy/pleiotropy/data/qtl/GTEx_Analysis_v8_eQTL",
-                         "/home/liumy/pleiotropy/data/qtl/GTEx_Analysis_v8_sQTL"), 
+prop_data <- lapply(list("GTEx_Analysis_v8_eQTL",
+                         "GTEx_Analysis_v8_sQTL"), 
                     function(file_path, score_data = pleiotropy_maindata$pn_ld){
                       
                       file_egenes <- list.files(path = file_path, pattern = "genes\\.txt$", full.names = TRUE)
