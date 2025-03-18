@@ -10,8 +10,8 @@ age7_name <- c("Euteleostomi", "Tetrapoda", "Amniota", "Mammalia", "Theria", "Eu
 x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
 
-setwd("/home/liumy/pleiotropy/github/data/")
-figure_file <- "/home/liumy/pleiotropy/github/Figure"
+setwd("Data")
+figure_file <- "Figure"
 #2 load data--------------------------
 load("pleiotropy_maindata.RData")
 #3 figure7--------------------
