@@ -209,7 +209,7 @@ ggsave(plot = percent_transegenes$age, width = 4.8, height = 5, device = cairo_p
 
 ##figure4B&4C----------------------
 ###load data
-tau_score <- fread("/home/liumy/pleiotropy/data/specificity/Tau_gene_V8.csv")
+tau_score <- fread("Tau_gene_V8.csv")
 tau_merge <- lapply(list("pm_ld", "pn_ld"), function(x, data = pleiotropy_maindata){
   data_merge <- merge(data[[x]][, .(gene, ensemblid, pleio_class3, age_stage4)], tau_score, by.x = "ensemblid", by.y = "gene_id", all.x = T)
 })
