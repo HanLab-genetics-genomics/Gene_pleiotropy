@@ -52,3 +52,10 @@ Input datasets and processed files required to reproduce the results.
 
 ## Dependencies
 The scripts were developed and tested in R (version 4.3.1).
+
+## Preparations before running the scripts:
+- Before you  run the scripts, you should do these preparisions first:
+- **Unrar the necessary files in the native directory as indicated in the Data Table above.**
+- **Set the working directory to the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/) directory.**
+
+If you encounter any issues, please reach out, and we will resolve them promptly.
