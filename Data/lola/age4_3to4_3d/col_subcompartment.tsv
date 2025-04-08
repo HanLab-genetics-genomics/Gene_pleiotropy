@@ -1,0 +1,13 @@
+userSet	dbSet	collection	pValueLog	oddsRatio	support	rnkPV	rnkOR	rnkSup	maxRnk	meanRnk	b	c	d	description	cellType	tissue	antibody	treatment	dataSource	filename	qValue	size
+1	31	subcompartment	43.1712749149027	5.99823124001678	231	1	1	23	23	8.33	66	1562	2678	Subcompartment_B4	NA	NA	NA	NA	NA	compartment_B4.bed	4.17942729419763e-42	25
+1	28	subcompartment	4.44626520081581	1.3505562738146	414	3	4	19	19	8.67	499	1379	2245	Subcompartment_B1	NA	NA	NA	NA	NA	compartment_B1.bed	0.0000887537026286314	896
+1	29	subcompartment	4.36628562504533	1.51986200907926	196	4	3	25	25	10.7	205	1597	2539	Subcompartment_B2	NA	NA	NA	NA	NA	compartment_B2.bed	0.000102596540413788	504
+1	30	subcompartment	0.0621821663477672	0.8907143532419	144	5	5	28	28	12.7	245	1649	2499	Subcompartment_B3	NA	NA	NA	NA	NA	compartment_B3.bed	1	685
+1	27	subcompartment	7.39140947689761e-10	0.622860994878503	256	16	18	21	21	18.3	579	1537	2165	Subcompartment_A2	NA	NA	NA	NA	NA	compartment_A2.bed	1	1249
+1	26	subcompartment	0	0.562422447629398	591	29	23	17	29	23	1280	1202	1464	Subcompartment_A1	NA	NA	NA	NA	NA	compartment_A1.bed	1	490
+2	26	subcompartment	20.2104145549894	1.81009701228583	1328	1	6	17	17	8	543	1532	1134	Subcompartment_A1	NA	NA	NA	NA	NA	compartment_A1.bed	1.90962081051611e-19	490
+2	27	subcompartment	8.72481350258252	1.6288987522344	600	14	12	20	20	15.3	235	2260	1442	Subcompartment_A2	NA	NA	NA	NA	NA	compartment_A2.bed	7.78909369251131e-09	1249
+2	30	subcompartment	0.550255471532736	1.07289457943428	251	27	27	29	29	27.7	138	2609	1539	Subcompartment_B3	NA	NA	NA	NA	NA	compartment_B3.bed	0.563345103857542	685
+2	28	subcompartment	0.00000597597362246879	0.730245288111095	521	29	28	23	29	26.7	392	2339	1285	Subcompartment_B1	NA	NA	NA	NA	NA	compartment_B1.bed	1	896
+2	29	subcompartment	0.00000133231117930579	0.623424882643228	211	30	30	30	30	30	190	2649	1487	Subcompartment_B2	NA	NA	NA	NA	NA	compartment_B2.bed	1	504
+2	31	subcompartment	0	0.190198068532793	79	31	31	31	31	31	218	2781	1459	Subcompartment_B4	NA	NA	NA	NA	NA	compartment_B4.bed	1	25

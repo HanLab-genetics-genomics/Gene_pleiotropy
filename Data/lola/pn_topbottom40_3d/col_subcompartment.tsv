@@ -1,0 +1,13 @@
+userSet	dbSet	collection	pValueLog	oddsRatio	support	rnkPV	rnkOR	rnkSup	maxRnk	meanRnk	b	c	d	description	cellType	tissue	antibody	treatment	dataSource	filename	qValue	size
+1	28	subcompartment	64.9922456056259	2.21395196696346	1446	1	3	26	26	10	763	7096	8290	Subcompartment_B1	NA	NA	NA	NA	NA	compartment_B1.bed	3.1558480782302e-64	896
+1	29	subcompartment	39.2527370550856	2.47561882909169	666	2	2	30	30	11.3	299	7876	8754	Subcompartment_B2	NA	NA	NA	NA	NA	compartment_B2.bed	6.9292244649773e-39	504
+1	30	subcompartment	33.3971580712578	1.87088263194676	1069	3	4	29	29	12	643	7473	8410	Subcompartment_B3	NA	NA	NA	NA	NA	compartment_B3.bed	4.14078201030131e-33	685
+1	27	subcompartment	32.7214282816971	1.49753366549716	2761	4	5	19	19	9.33	2189	5781	6864	Subcompartment_A2	NA	NA	NA	NA	NA	compartment_A2.bed	1.6821525093777e-32	1249
+1	31	subcompartment	21.9949179068146	3.29763264578632	238	5	1	31	31	12.3	78	8304	8975	Subcompartment_B4	NA	NA	NA	NA	NA	compartment_B4.bed	6.9699758486172e-22	25
+1	26	subcompartment	0	0.296435352629497	2901	22	31	18	31	23.7	5743	5641	3310	Subcompartment_A1	NA	NA	NA	NA	NA	compartment_A1.bed	1	490
+2	26	subcompartment	322.005185347452	3.3576321900271	5934	1	1	14	14	5.33	2710	3533	5418	Subcompartment_A1	NA	NA	NA	NA	NA	compartment_A1.bed	0	490
+2	27	subcompartment	0	0.691037379378323	2336	27	27	22	27	25.3	2614	7131	5514	Subcompartment_A2	NA	NA	NA	NA	NA	compartment_A2.bed	1	1249
+2	28	subcompartment	0	0.432405509691886	792	27	29	28	29	28	1417	8675	6711	Subcompartment_B1	NA	NA	NA	NA	NA	compartment_B1.bed	1	896
+2	30	subcompartment	0	0.543712638242828	688	27	28	29	29	28	1024	8779	7104	Subcompartment_B3	NA	NA	NA	NA	NA	compartment_B3.bed	1	685
+2	29	subcompartment	0	0.372915334125911	303	27	30	30	30	29	662	9164	7466	Subcompartment_B2	NA	NA	NA	NA	NA	compartment_B2.bed	1	504
+2	31	subcompartment	0	0.294774194257369	82	27	31	31	31	29.7	234	9385	7894	Subcompartment_B4	NA	NA	NA	NA	NA	compartment_B4.bed	1	25
