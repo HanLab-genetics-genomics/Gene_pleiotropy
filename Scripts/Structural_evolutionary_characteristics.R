@@ -9,7 +9,6 @@ age_color7 <- lighten(mycolor, 0.45)
 age7_name <- c("Euteleostomi", "Tetrapoda", "Amniota", "Mammalia", "Theria", "Eutheria", "Primate")
 x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
-options(warn = -1)
 
 setwd("Data")
 figure_file <- "Figure"
@@ -209,7 +208,7 @@ dnds_func <- function(data = pleiotropy_maindata$pn_ld, x_label = "GPS-N bins",
   
   return(plot)
 }
-##GPS-N (figure 3A, 3B, 3C, 3D)-------------------------
+##GPS-N (figure 3A-C)-------------------------
 usedata <-  pleiotropy_maindata$pn_ld
 ###length related metrics + GC content--------------------
 length_var <- c("Gene length (bp)", "Transcript length (bp)", "CDS Length",  "Protein size (aa)", "CDS/Transcript Length ratio",
@@ -427,6 +426,80 @@ age_constrait_percent_list <- list(lof_tolerant = group_conpercent_func(data =us
 age_constrait_percent_list$lof_tolerant$plot
 
 ggsave(plot = age_constrait_percent_list$lof_tolerant$plot, width = 4.8, height = 5, device = cairo_pdf,
+       filename = sprintf("%s/lof_tolerant_age.pdf",figure_file))
+
+##figure3D&E--------------------
+percent_plot <- function(data = egenes_prop[1:3,49], 
+                         group = factor(c("Low", "Intermediate", "High"), levels = c("Low", "Intermediate", "High")),
+                         color_values = pleio_color, x_label = "", x_text = c("Low", "Intermediate", "High"),
+                         y_label = "Proportion of eGenes", stat_name = "egene_pleio",
+                         stat_test = test, test_list = c("Low", "High")){
+  
+  plot_data <- data.table(group = group, percent = data*100)
+  
+  plot <- ggplot(data = plot_data, aes(x = group, y = percent, fill = group)) + theme_bw() +
+    geom_bar(stat = "identity") +
+    geom_signif(comparisons = list(test_list), 
+                annotations = stat_test[[stat_name]]) +
+    scale_fill_manual(values = color_values) +
+    geom_text(aes(label = sprintf("%.2f",percent)), vjust = 1.5, 
+              color = "grey20", fontface = "bold", size = 6) +
+    labs(y = y_label, title = "", x = x_label) +
+    theme(text = element_text(size = 12, color = "black", face = "bold"),
+          axis.title = element_text(size = 15, face = "bold", ), 
+          axis.text = element_text(size = 12, color = "black", face = "bold"), 
+          axis.ticks = element_blank(), axis.line = element_line(colour = "grey50"),
+          panel.grid = element_blank(), panel.grid.minor = element_blank(),
+          legend.position = "none", 
+          panel.border = element_blank(),
+          plot.title = element_text(size=15, hjust=0.5),
+          panel.grid.major = element_blank())
+  
+  return(plot)
+}  
+
+
+pn_prop <- prop.table(table(pleiotropy_maindata$pn_ld[, .(pleio_class3, ifhsd2)]), margin = 1)[1:3,1]
+pn_counts <- table(pleiotropy_maindata$pn_ld[, .(pleio_class3, ifhsd2)])
+pm_prop <- prop.table(table(pleiotropy_maindata$pm_ld[, .(pleio_class3, ifhsd2)]), margin = 1)[1:3,1]
+pm_counts <- table(pleiotropy_maindata$pm_ld[, .(pleio_class3, ifhsd2)])
+age_prop <- prop.table(table(pleiotropy_maindata$pn_ld[, .(age_stage4, ifhsd2)]), margin = 1)[1:4,1]
+age_counts <- table(pleiotropy_maindata$pn_ld[, .(age_stage4, ifhsd2)])
+
+test <- list(
+  pleio_pn = prop.test(c(pn_counts["Low pleiotropy", "Duplicates"], pn_counts["High pleiotropy", "Duplicates"]),
+                       c(sum(pn_counts["Low pleiotropy",]), sum(pn_counts["High pleiotropy",])))$p.value %>% sprintf("%.2e",.),
+  pleio_pm = prop.test(c(pm_counts["Low pleiotropy", "Duplicates"], pm_counts["High pleiotropy", "Duplicates"]),
+                       c(sum(pm_counts["Low pleiotropy",]), sum(pm_counts["High pleiotropy",])))$p.value %>% sprintf("%.2e",.),
+  age = ifelse(prop.test(c(age_counts["Euteleostomi", "Duplicates"], age_counts["Eutheria", "Duplicates"]),
+                         c(sum(age_counts["Euteleostomi",]), sum(age_counts["Eutheria",])))$p.value %>% sprintf("%.2e",.) == "0.00e+00", "< 2.2e-16")
+)
+
+percent_duplicatedgenes <- list(pleio_pn = percent_plot(data = pn_prop, 
+                                                        group = factor(c("Low", "Intermediate", "High"), 
+                                                                       levels = c("Low", "Intermediate", "High")),
+                                                        color_values = pleio_color, x_label = "", 
+                                                        stat_test = test, test_list = c("Low", "High"), stat_name = "pleio_pn",
+                                                        y_label = "Proportion of duplicated genes (%)"),
+                                pleio_pm = percent_plot(data = pm_prop, 
+                                                        group = factor(c("Low", "Intermediate", "High"), 
+                                                                       levels = c("Low", "Intermediate", "High")),
+                                                        color_values = pleio_color, x_label = "", 
+                                                        stat_test = test, test_list = c("Low", "High"), stat_name = "pleio_pm",
+                                                        y_label = "Proportion of duplicated genes (%)"),
+                                age = percent_plot(data = age_prop, 
+                                                   group = factor(c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria"), 
+                                                                  levels = c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")),
+                                                   color_values = age_color, y_label = "Proportion of duplicated genes (%)", x_label = "",
+                                                   stat_test = test, test_list = c("Euteleostomi", "Eutheria"), stat_name = "age"))
+
+
+percent_duplicatedgenes$pleio_pn
+percent_duplicatedgenes$age
+
+ggsave(plot = percent_duplicatedgenes$pleio_pn, width = 3.2, height = 5, device = cairo_pdf,
+       filename = sprintf("%s/lof_tolerant_age.pdf",figure_file))
+ggsave(plot = percent_duplicatedgenes$age, width = 4.8, height = 5, device = cairo_pdf,
        filename = sprintf("%s/lof_tolerant_age.pdf",figure_file))
 
 ##figure3F-----------------------
@@ -745,7 +818,7 @@ forest_result <- lapply(list("pn_ld", "pm_ld"), function(x, data = pleiotropy_ma
 names(forest_result) <- c("pn_ld", "pm_ld")
 
 ###plot results of random forest--------------
-load("forest_13var_seed123_250114.RData")
+load("RandomForest/forest_13var_seed123_250114.RData")
 data1 <- forest_result$pm_ld$plot_randomforest %>% as.data.frame(.) %>%
   mutate(., name = rownames(.)) %>%
   mutate(., name = ifelse(name == "age_stage7_mya", "Gene age", 
@@ -881,7 +954,7 @@ model <- '
 '
 
 fit <- lavaan::sem(model, data = mediation_data, se="bootstrap", bootstrap = 1000, iseed = 123) 
-###plot the results for figure 3L-------------------------
+###plot the results-------------------------
 load("lavaan_multiple_mediation_singlesig_pn.RData")
 summary_fit <- lavaan_summary(fit, digits = 5, print = F)
 summary_fit$effect$fdr <- p.adjust(summary_fit$effect$pval, method = "fdr")
