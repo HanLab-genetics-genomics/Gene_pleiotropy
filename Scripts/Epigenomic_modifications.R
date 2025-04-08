@@ -9,10 +9,11 @@ age_color7 <- lighten(mycolor, 0.45)
 age7_name <- c("Euteleostomi", "Tetrapoda", "Amniota", "Mammalia", "Theria", "Eutheria", "Primate")
 x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
+options(warn = -1)
 
 setwd("Data")
 figure_file <- "Figure"
-bed_file <- "Data/bed_data"
+bed_file <- "bed_data"
 lola_out_file <- "lola"
 #2 load data--------------------------
 load("pleiotropy_maindata.RData")
@@ -278,7 +279,7 @@ lola_enrichment <- list(
                      bed2_file = sprintf("%s/pm_top%s_hg19.bed", bed_file, x),
                      out_file = sprintf("%s/pm_topbottom%s_3d", lola_out_file, x))}),
   
-  pm_topbottom = lapply(as.list(c(10,20,30,40,50)), function(x){
+  pn_topbottom = lapply(as.list(c(10,20,30,40,50)), function(x){
     lola_enrich_func(regiondb_use = regionDB, ifout = TRUE, 
                      bed1_file = sprintf("%s/pn_bottom%s_hg19.bed", bed_file, x),
                      bed2_file = sprintf("%s/pn_top%s_hg19.bed", bed_file, x),
@@ -347,7 +348,7 @@ plot_compartment <- ggplot(data = plot_data,
 
 plot_compartment
 ggsave(plot = plot_compartment, width = 5, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/enrich_compartment_20%%.pdf",figure_file))
+       filename = sprintf("%s/enrich_compartment_20.pdf",figure_file))
 
 
 
