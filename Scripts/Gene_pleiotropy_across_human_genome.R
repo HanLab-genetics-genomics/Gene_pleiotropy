@@ -9,6 +9,7 @@ age_color7 <- lighten(mycolor, 0.45)
 age7_name <- c("Euteleostomi", "Tetrapoda", "Amniota", "Mammalia", "Theria", "Eutheria", "Primate")
 x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
+options(warn = -1)
 
 setwd("Data")
 figure_file <- "Figure"
