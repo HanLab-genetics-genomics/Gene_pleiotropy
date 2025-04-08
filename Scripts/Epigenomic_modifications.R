@@ -111,8 +111,9 @@ for(i in c(1:4)){
 }
 
 ##lola enrichment for LOLA core dataset------------------
+install.packages("simpleCache")
 library(GenomicRanges); library(LOLA)
-regionDB = loadRegionDB(dbLocation = "LOLACore") 
+regionDB = loadRegionDB(dbLocation = "LOLACore/LOLACore")
 
 lola_enrich_func <- function(regiondb_use, ifout = TRUE, 
                              bed1_file = "pn_1_hg19.bed",
