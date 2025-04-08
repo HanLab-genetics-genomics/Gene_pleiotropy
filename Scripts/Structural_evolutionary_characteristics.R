@@ -209,7 +209,7 @@ dnds_func <- function(data = pleiotropy_maindata$pn_ld, x_label = "GPS-N bins",
   
   return(plot)
 }
-##GPS-N (figure 3A, 3C, 3E, 3G)-------------------------
+##GPS-N (figure 3A, 3B, 3C, 3D)-------------------------
 usedata <-  pleiotropy_maindata$pn_ld
 ###length related metrics + GC content--------------------
 length_var <- c("Gene length (bp)", "Transcript length (bp)", "CDS Length",  "Protein size (aa)", "CDS/Transcript Length ratio",
@@ -309,7 +309,7 @@ pn_constrait_percent_list$lof_tolerant$plot
 ggsave(plot = pn_constrait_percent_list$lof_tolerant$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/lof_tolerant_pn.pdf",figure_file))
 
-##AGE (figure 3B, 3D, 3F, 3H)-------------------------
+##AGE-------------------------
 usedata <- pleiotropy_maindata$pn_ld[!is.na(age_stage4),]
 ###length related metrics + GC content--------------------
 length_var <- c("Gene length (bp)", "Transcript length (bp)", "CDS Length",  "Protein size (aa)", "CDS/Transcript Length ratio",
@@ -429,7 +429,7 @@ age_constrait_percent_list$lof_tolerant$plot
 ggsave(plot = age_constrait_percent_list$lof_tolerant$plot, width = 4.8, height = 5, device = cairo_pdf,
        filename = sprintf("%s/lof_tolerant_age.pdf",figure_file))
 
-##figure3I-----------------------
+##figure3F-----------------------
 hsd_box_func <- function(data = pleiotropy_maindata$pn_ld, x_label = "", scale_y = F,
                          y_label = "Gene length (bp)" , group = "pleio_class3", x_var = "Gene length (bp)",
                          x_text = c("Low", "Intermediate", "High"), color_value = pleio_color,
@@ -526,7 +526,7 @@ hsd_box$pleio_pn$plot
 ggsave(plot = hsd_box$pleio_pn$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/hsd_pleio_pn.pdf",figure_file))
 
-##figure3H-----------------------
+##figure3G-----------------------
 ###manage data---------------------
 dup_pairs <- pleiotropy_maindata$pn_ld[!is.na(group_id), 
                                        .(N = .N, gene, age_stage7, age_stage7_mya, age_stage4,
@@ -722,7 +722,7 @@ hsd_progenitor_box$pleio_pn$plot
 ggsave(plot = hsd_progenitor_box$pleio_pn$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/progenitor_pleio_pn.pdf",figure_file))
 
-##figure3K-----------------------------
+##figure3H-----------------------------
 ###run the random forest (long time, could skip and load the results provided)---------------
 library(randomForest)
 forest_result <- lapply(list("pn_ld", "pm_ld"), function(x, data = pleiotropy_maindata){
@@ -799,7 +799,7 @@ ggsave(plot = forest_plot_list$forest_pm, width = 5, height = 5, device = cairo_
 ggsave(plot = forest_plot_list$forest_pn, width = 5, height = 5, device = cairo_pdf,
        filename = sprintf("%s/forest_pn.pdf",figure_file))
 
-##figure3L & supplementary figure 12A-------------------
+##figure3I & supplementary figure 12A-------------------
 ###load data--------------
 mediation_data <- pleiotropy_maindata$pn_ld[, .(`Gene length (bp)`, `CDS Length`, `CDS/Transcript Length ratio`, `GC content`, 
                                                 `Transcript count`, `Exon Counts`, `Number of SNPs (Gene)`,
