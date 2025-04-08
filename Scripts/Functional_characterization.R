@@ -9,6 +9,7 @@ age_color7 <- lighten(mycolor, 0.45)
 age7_name <- c("Euteleostomi", "Tetrapoda", "Amniota", "Mammalia", "Theria", "Eutheria", "Primate")
 x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
+options(warn = -1)
 
 setwd("Data")
 figure_file <- "Figure"
@@ -17,6 +18,8 @@ load("pleiotropy_maindata.RData")
 #3 figure6--------------------------
 ##figure6A-------------------------
 library(genekitr); library(igraph); library(ggraph); library(patchwork); library(rrvgo); library(clusterProfiler)
+BiocManager::install("org.Hs.eg.db")
+
 ego_bp <- list(pm10 = genORA(id = pleiotropy_maindata$pm_ld[pleio10 == 10, gene], 
                              geneset = geneset::getGO(org = "human",ont = "bp")),
                pm1 = genORA(id = pleiotropy_maindata$pm_ld[pleio10 == 1, gene], 
@@ -62,7 +65,7 @@ lapply(list("pn10"), function(x){
 
 ##figure6B&6C-------------------------
 ###load data-----------------
-chronos_data <- fread("CRISPRGeneEffect.csv")
+chronos_data <- fread("CRISPRGeneEffect/CRISPRGeneEffect.csv")
 chronos_essential <- data.table(gene = names(chronos_data)[-1],
                                 essential_score = colMeans(chronos_data[,-1], na.rm = TRUE)) %>%
   separate(gene, into = c("gene", "id"), sep = " ") %>% .[,-2] %>%
