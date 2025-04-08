@@ -297,7 +297,7 @@ keggluca_plot_func <- function(data = kegg_list$pn10, plot_height = 10, plot_nam
     xlab("Enrichment")
   
   ggsave(plot = plot, width = 10, height = plot_height, device = cairo_pdf,
-         filename = sprintf("kegg_luca_%s.pdf", plot_name))
+         filename = sprintf("%s/kegg_luca_%s.pdf", figure_file, plot_name))
 }
 
 keggluca_plot_list <- list(
