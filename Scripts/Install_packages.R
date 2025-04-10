@@ -5,7 +5,7 @@ pkgs <- c("data.table", "dplyr", "ggplot2", "corrplot", "ggpubr", "Gmisc", "open
           "ggridges", "dorothea", "OmnipathR", "decoupleR", "viridis", "ggpattern", "biomaRt", "dbplyr", 
           "GenomicRanges", "LOLA", "simpleCache", "ggbeeswarm",  
           "genekitr", "igraph", "ggraph", "rrvgo", "clusterProfiler", "enrichplot", 
-          "janitor", "binom", "glue", "lawstat", "weights", "epitools", "DescTools", "optparse", "MASS")
+          "janitor", "binom", "glue", "lawstat", "weights", "epitools", "DescTools", "optparse", "MASS"， "mediation")
 
 
 miss_pkgs <- setdiff(pkgs, installed.packages()[, "Package"])
