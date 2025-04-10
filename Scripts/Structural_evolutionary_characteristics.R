@@ -886,6 +886,7 @@ mediation_data <- as.data.frame(mediation_data) %>%
 mediation_data$ifhsd2 <- as.numeric(mediation_data$ifhsd2) 
 
 ###singel mediator analysis using mediation (long time, could skip and load the results provided)--------------------
+library(mediation)
 mediation_list <- list()
 set.seed(123)
 for(var_name in c("gene_length", "cds_length", "transcript", "exon", "cds_ratio", "gc",
