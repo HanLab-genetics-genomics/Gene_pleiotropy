@@ -1,6 +1,6 @@
 #1 load packages and set variables-------
 sapply(c("data.table", "dplyr", "ggplot2", "corrplot", "ggpubr", "Gmisc", "openxlsx", "readxl", "paletteer", "MuMIn",
-         "ggsci", "scales", "RColorBrewer", "gridExtra", "dplyr", "tidyr", "stringr", "colorspace", "cowplot",
+         "ggsci", "scales", "RColorBrewer", "gridExtra", "tidyr", "stringr", "colorspace", "cowplot",
          "ggbreak", "ggstatsplot", "viridis"), require, character.only = TRUE)
 mycolor <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494")
 pleio_color <- lighten(c("#80CDC1", "#85C6E0", "#223E84"), 0.45)
@@ -11,7 +11,7 @@ x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
 options(warn = -1)
 
-setwd("Data")
+setwd("../../Gene_pleiotropy-main/Data")
 figure_file <- "Figure"
 bed_file <- "bed_data"
 lola_out_file <- "lola"
