@@ -55,6 +55,19 @@ The scripts were developed and tested in R (version 4.3.1).
 
 ## Preparations before running the scripts:
 - **Unrar the necessary files in the native directory as indicated in the Data Table above.**
+```bash
+wget -c https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/archive/refs/heads/main.zip
+unzip main.zip
+cd Gene_pleiotropy-main
+unrar x Data/LOLACore/LOLACore.part01.rar Data/LOLACore
+unrar x Data/RandomForest/forest_13var_seed123_250114.part01.rar Data/RandomForest
+nrar x Data/mediation_list_pn.rar Data
+unrar x Data/genehancer_all.rar Data
+unrar x Data/CRISPRGeneEffect/CRISPRGeneEffect.part01.rar Data/CRISPRGeneEffect
+```
 - **Set the working directory to the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/) directory.**
+```R
+setwd("Gene_pleiotropy-main/Data")
+```
 
 If you encounter any issues, please reach out, and we will resolve them promptly.
