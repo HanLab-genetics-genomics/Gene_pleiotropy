@@ -59,9 +59,12 @@ for(i in c(20)){
   top_bed_name = paste0("pm_top", i, "_hg38")
   pm_bed[[top_bed_name]] <- genecoordinate_func(x = 101-i, var_name =  "pleio100", bedfile = bed_file,
                                                 data = pleiotropy_maindata$pm_ld, out_name = top_bed_name)
+  print(paste0(top_bed_name, " is over"))
+         
   bottom_bed_name = paste0("pm_bottom", i, "_hg38")
   pm_bed[[bottom_bed_name]] <- genecoordinate_func(x = i, var_name =  "pleio100", 
                                                    data = pleiotropy_maindata$pm_ld, out_name = bottom_bed_name)
+  print(paste0(bottom_bed_name, " is over"))
 }
 
 pn_bed <- list()
@@ -69,9 +72,12 @@ for(i in c(20)){
   top_bed_name = paste0("pn_top", i, "_hg38")
   pn_bed[[top_bed_name]] <- genecoordinate_func(x = 101-i, var_name =  "pleio100", 
                                                 data = pleiotropy_maindata$pn_ld, out_name = top_bed_name)
+  print(paste0(top_bed_name, " is over"))
+         
   bottom_bed_name = paste0("pn_bottom", i, "_hg38")
   pn_bed[[bottom_bed_name]] <- genecoordinate_func(x = i, var_name =  "pleio100", 
                                                    data = pleiotropy_maindata$pn_ld, out_name = bottom_bed_name)
+  print(paste0(bottom_bed_name, " is over"))
 }
 
 age_bed <- list()
@@ -79,6 +85,7 @@ for(i in c(1:4)){
   bed_name = paste0("age4_", i, "_hg38")
   age_bed[[bed_name]] <- genecoordinate_func(x = i, var_name =  "age_stage4_num", 
                                              data = pleiotropy_maindata$pn_ld, out_name = bed_name, ifidentical = T)
+  print(paste0(bed_name, " is over"))
 }
 
 ####GRCh37---------------------
@@ -88,9 +95,12 @@ for(i in c(10, 20, 30, 40 ,50)){
   top_bed_name = paste0("pm_top", i, "_hg19")
   pm_bed[[top_bed_name]] <- genecoordinate_func(x = 101-i, var_name =  "pleio100", 
                                                 data = pleiotropy_maindata$pm_ld, out_name = top_bed_name)
+  print(paste0(top_bed_name, " is over"))
+
   bottom_bed_name = paste0("pm_bottom", i, "_hg19")
   pm_bed[[bottom_bed_name]] <- genecoordinate_func(x = i, var_name =  "pleio100", 
                                                    data = pleiotropy_maindata$pm_ld, out_name = bottom_bed_name)
+  print(paste0(bottom_bed_name, " is over"))
 }
 
 pn_bed <- list()
@@ -98,9 +108,12 @@ for(i in c(10, 20, 30, 40 ,50)){
   top_bed_name = paste0("pn_top", i, "_hg19")
   pn_bed[[top_bed_name]] <- genecoordinate_func(x = 101-i, var_name =  "pleio100", 
                                                 data = pleiotropy_maindata$pn_ld, out_name = top_bed_name)
+  print(paste0(top_bed_name, " is over"))
+         
   bottom_bed_name = paste0("pn_bottom", i, "_hg19")
   pn_bed[[bottom_bed_name]] <- genecoordinate_func(x = i, var_name =  "pleio100", 
                                                    data = pleiotropy_maindata$pn_ld, out_name = bottom_bed_name)
+  print(paste0(bottom_bed_name, " is over"))
 }
 
 age_bed <- list()
@@ -108,10 +121,11 @@ for(i in c(1:4)){
   bed_name = paste0("age4_", i, "_hg19")
   age_bed[[bed_name]] <- genecoordinate_func(x = i, var_name =  "age_stage4_num", 
                                              data = pleiotropy_maindata$pn_ld, out_name = bed_name, ifidentical = T)
+  print(paste0(bed_name, " is over"))
 }
 
 ##lola enrichment for LOLA core dataset------------------
-install.packages("simpleCache")
+#install.packages("simpleCache")
 library(GenomicRanges); library(LOLA)
 regionDB = loadRegionDB(dbLocation = "LOLACore/LOLACore")
 
