@@ -11,7 +11,7 @@ x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
 options(warn = -1)
 
-setwd("../../Gene_pleiotropy-main/Data")
+setwd("Gene_pleiotropy-main/Data")
 figure_file <- "Figure"
 
 #2 load data--------------------------
