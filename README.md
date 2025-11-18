@@ -60,11 +60,9 @@ No non-standard hardware required. A typical laptop/desktop (≥16 GB RAM recomm
 
 ##  Instructions for use
 ### Directory conventions
-All analysis scripts are stored in "/path/to/Gene_pleiotropy-main/Scripts".
-
-All input files are stored in "/path/to/Gene_pleiotropy-main/Data". The required input files are loaded from the "Data" directory.
-
-Each script writes PDF files to "/path/to/Gene_pleiotropy-main/Output/". 
+- All analysis scripts are stored in "/path/to/Gene_pleiotropy-main/Scripts".
+- All input files are stored in "/path/to/Gene_pleiotropy-main/Data". The required input files are loaded from the "Data" directory.
+- Each script writes PDF files to "/path/to/Gene_pleiotropy-main/Output/". 
 
 ### Installation guide and preparation before running the scripts:
 - **Download the source code and data archive [Gene_pleiotropy-main.zip]**
@@ -84,11 +82,11 @@ unrar x Data/CRISPRGeneEffect/CRISPRGeneEffect.part01.rar Data/CRISPRGeneEffect
   
 Typical install time on a “normal” desktop computer: approximately 0.5-1h, although the actual time will vary depending on your hardware and internet connection. 
 
-- **Set the Working directory to the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/) directory.**
+- **Set the Working directory to the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/).**
   
 Each script begins with a line such as: setwd("/path/to/Gene_pleiotropy-main/Data"), which you should modify to the path where you saved the Gene_pleiotropy-main/Data folder.
 
-- **Set the Output directory to the [**Output**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Output/) directory.**
+- **Set the Output directory to the [**Output**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Output/).**
   
 Each script also defines an output path, for example: figure_file <- "/path/to/Gene_pleiotropy-main/Output/Figure1". You can edit this to change the directory where output files will be saved.
 
@@ -98,7 +96,7 @@ Set the working directory to the [**Data**](https://github.com/HanLab-genetics-g
 - **Reproduce figures**: Run the scripts provided for each main figure. These scripts will load the relevant datasets from the Data folder and output the final plots. You may need to revise the working directory using the R function setwd().
 - **Review the Scripts**: See the [**Scripts**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/) folder for detailed scripts and function definitions.
 - **Explore the Data**: Browse the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/) folder to view the input datasets and intermediate processed files.
---**Explore the Output**: All figures are saved as PDF files with informative names that map directly to the manuscript figures (e.g. figure1_*, figure2_*) in [**Output.**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Output/)
+- **Explore the Output**: All figures are saved as PDF files with informative names that map directly to the manuscript figures (e.g. figure1_*, figure2_*) in [**Output.**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Output/)
 
 Runtime: approximately 2-3 hours for all scripts combined.  
 Note: Runtimes refer to a standard laptop/desktop with required packages installed and the provided input files.
