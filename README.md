@@ -65,7 +65,7 @@ nrar x Data/mediation_list_pn.rar Data
 unrar x Data/genehancer_all.rar Data
 unrar x Data/CRISPRGeneEffect/CRISPRGeneEffect.part01.rar Data/CRISPRGeneEffect
 ```
-- **Install the required R packages by running "[1.Install_packages.R](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/2.Gene_pleiotropy_across_human_genome.R)**
+- **Install the required R packages by running "[1.Install_packages.R](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/1.Install_packages.R)**
 - **Set the working directory to the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/) directory.**
 ```R
 setwd("/path/to/Gene_pleiotropy-main/Data")
