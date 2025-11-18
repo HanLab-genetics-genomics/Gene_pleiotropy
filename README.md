@@ -45,6 +45,9 @@ Input datasets and processed files required to reproduce the results.
 | FDA approved drug targets |  [FDA approved drug targets](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/fda_2023.xlsx) |
 | Data for durg Target-Indication pairs |  [genetic_support-main](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/genetic_support-main) |
 
+### Output:
+All figures are saved as PDF files with informative names that map directly to the manuscript figures (e.g. figure1_*, figure2_*) in [**Output**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Output/)
+
 ## Usage
 - **Reproduce figures**: Run the scripts provided for each main figure. These scripts will load the relevant datasets from the Data folder and output the final plots. You may need to revise the working directory using the R function setwd().
 - **Review the Scripts**: See the [**Scripts**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/) folder for detailed scripts and function definitions.
