@@ -6,12 +6,12 @@ This repository contains the data and source code used to produce the manuscript
 ### Scripts
 Seven scripts (one per main figure) that generate the figures from the input data. R scripts and functions demonstrating how the analysis was performed.
 * [Gene pleiotropy across the human genome](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/2.Gene_pleiotropy_across_human_genome.R): Gene-level pleiotropy scores reveal pervasive pleiotropy in the human genome.  
-* [Gene pleiotropy and gene age](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/Gene_pleiotropy_and_gene_age.R): Gene evolutionary age is associated with pleiotropy, genes from older evolutionary groups exhibiting higher pleiotropy.  
-* [Structural and evolutionary characteristics](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/Structural_evolutionary_characteristics.R): Gene structural and evolutionary characteristics across pleiotropy groups and age categories. 
-* [Gene regulatory circuitry](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/Gene_regulatory_circuitry.R): Complex gene regulatory circuitry and interaction architectures in highly pleiotropic and evolutionarily older genes.
-* [Epigenomic modifications](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/Epigenomic_modifications.R): Active epigenomic modifications in highly pleiotropic and evolutionarily older genes.
-* [Functional characterization](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/Functional_characterization.R): Functional characterization of highly pleiotropic and evolutionarily older genes.
-* [Drug development](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/Drug_development.R): Pleiotropy evidence contributes to drug development.
+* [Gene pleiotropy and gene age](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/3.Gene_pleiotropy_and_gene_age.R): Gene evolutionary age is associated with pleiotropy, genes from older evolutionary groups exhibiting higher pleiotropy.  
+* [Structural and evolutionary characteristics](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/4.Structural_evolutionary_characteristics.R): Gene structural and evolutionary characteristics across pleiotropy groups and age categories. 
+* [Gene regulatory circuitry](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/5.Gene_regulatory_circuitry.R): Complex gene regulatory circuitry and interaction architectures in highly pleiotropic and evolutionarily older genes.
+* [Epigenomic modifications](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/6.Epigenomic_modifications.R): Active epigenomic modifications in highly pleiotropic and evolutionarily older genes.
+* [Functional characterization](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/7.Functional_characterization.R): Functional characterization of highly pleiotropic and evolutionarily older genes.
+* [Drug development](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/8.Drug_development.R): Pleiotropy evidence contributes to drug development.
 
 ### Data:
 Input datasets and processed files required to reproduce the results.
@@ -65,9 +65,10 @@ nrar x Data/mediation_list_pn.rar Data
 unrar x Data/genehancer_all.rar Data
 unrar x Data/CRISPRGeneEffect/CRISPRGeneEffect.part01.rar Data/CRISPRGeneEffect
 ```
+- **Install the required R packages by running "[1.Install_packages.R](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/2.Gene_pleiotropy_across_human_genome.R)**
 - **Set the working directory to the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/) directory.**
 ```R
-setwd("Gene_pleiotropy-main/Data")
+setwd("/path/to/Gene_pleiotropy-main/Data")
 ```
 
 If you encounter any issues, please reach out, and we will resolve them promptly.
