@@ -48,11 +48,13 @@ Input datasets and processed files required to reproduce the results.
 ### Output:
 All figures are saved as PDF files with informative names that map directly to the manuscript figures (e.g. figure1_*, figure2_*) in [**Output.**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Output/)
 
+
 ## System requirements
 ### Operating systems
 Linux (Ubuntu 20.04), Windows 10/11, or macOS (12+ Monterey tested)
 ### Dependencies
 R ≥4.3.1
+
 The scripts were developed and tested in R (version 4.3.1).
 ### Hardware
 No non-standard hardware required. A typical laptop/desktop (≥16 GB RAM recommended) is sufficient for these scripts.
@@ -93,7 +95,7 @@ Each script also defines an output path, for example: figure_file <- "/path/to/G
 ## Running on your data
 Set the working directory to the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/) folder at the top of each script [setwd("/path/to/Gene_pleiotropy-main/Data")].
 
-- **Reproduce figures**: Run the scripts provided for each main figure. These scripts will load the relevant datasets from the Data folder and output the final plots. You may need to revise the working directory using the R function setwd().
+- **Reproduce figures**: Run the scripts provided for each main figure. These scripts will load the relevant datasets from the Data folder and output the final plots.
 - **Review the Scripts**: See the [**Scripts**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/) folder for detailed scripts and function definitions.
 - **Explore the Data**: Browse the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/) folder to view the input datasets and intermediate processed files.
 - **Explore the Output**: All figures are saved as PDF files with informative names that map directly to the manuscript figures (e.g. figure1_*, figure2_*) in [**Output.**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Output/)
