@@ -329,7 +329,7 @@ dupgene_list <- list(ens_dup_human  = para[lca %in% recent_lca_list$recent_human
 
 
 ##merge with GPS data 
-GPS_feature_all <- fread("GPS_feature_all.csv")
+GPS_feature_all <- fread("GPS_feature_all.csv", na.strings = c("", "NA"))
 head(GPS_feature_all)
 
 GPS_hsd <- copy(GPS_feature_all)
