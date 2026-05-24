@@ -101,7 +101,7 @@ fisher_test_list_pn
 
 ####################PCA analysis#####################--------------------
 #1 load data-----------------
-GPS_feature_all <- fread("GPS_feature_all.csv")
+GPS_feature_all <- fread("GPS_feature_all.csv", na.strings = c("", "NA"))
 head(GPS_feature_all, 2)
 
 #"ogee_connectivity" #6467 NAs
