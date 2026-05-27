@@ -1,6 +1,6 @@
 #1 load packages and set variables-------
 setwd("/path/to/Gene_pleiotropy-main/Data")
-figure_file <- "/path/to/Gene_pleiotropy-main/Output/Figure4"
+figure_file <- "/path/to/Gene_pleiotropy-main/Output/Gene_regulatory_circuitry"
 if (!dir.exists(figure_file)) {
   dir.create(figure_file, recursive = TRUE)
 }
@@ -138,9 +138,7 @@ percent_sgenes <- list(pleio = percent_plot(data = prop_data$`cis-sqtls`[1:3, 49
                                           x_label = "Cis-sGenes", stat_name = "sgene_age", test_list = age_test))
 
 percent_egenes$pleio
-percent_egenes$age
 percent_sgenes$pleio
-percent_sgenes$age
 
 ggsave(plot = percent_egenes$pleio, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure3_cisegenes_pn.pdf",figure_file))
@@ -198,7 +196,6 @@ percent_transegenes <- list(pleio_n = percent_plot(data = transeqtl_prop$pn_ld$t
                                                stat_test = transeqtl_prop$pn_ld$test, stat_name = "transegene_age"))
 
 percent_transegenes$pleio_n
-percent_transegenes$age
 
 
 ##gene specificity----------------------
