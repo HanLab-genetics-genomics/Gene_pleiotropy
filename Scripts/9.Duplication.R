@@ -19,7 +19,7 @@ options(warn = -1)
 
 ################Duplication (ancestral-higher vs ancestral-lower group)####################--------------------
 #1 diff by pleio class------------------
-load("progenitor_data.RData")
+load("Duplication/progenitor_data.RData")
 progenitor_wide_pn <- merge(progenitor_data$pn_ld[progenitor == "Progenitor", .(use_score, group_id, gene, progenitor, pleio10_num = as.numeric(pleio10))],
                             progenitor_data$pn_ld[progenitor == "Copy", .(use_score, group_id, gene, progenitor, pleio10_num = as.numeric(pleio10))],
                             by = "group_id", all.x = T, all.y = T) %>%
@@ -40,6 +40,11 @@ nrow(progenitor_wide_pm) #1211 paralog pairs
 
 
 #2 relative sizes of these two subsets------------------------
+library(ggplot2)
+library(ggpubr)
+library(rstatix)
+library(ggstatsplot)
+
 plot_pairclass_bar <- function(dt,
                                metric_name = "GPS-N",
                                diff_col = "diff_pleio10",
@@ -154,11 +159,17 @@ plot_pairclass_bar <- function(dt,
 
 res_pn <- plot_pairclass_bar(dt = progenitor_wide_pn, metric_name = "GPS-N",
                              diff_col = "diff_pleio10", use_percent = TRUE)
+res_pn$plot$layers <- res_pn$plot$layers[
+  !sapply(res_pn$plot$layers, function(x) inherits(x$geom, "GeomBracket"))
+]
 res_pn$plot
 res_pn$stat_test
 
 res_pm <- plot_pairclass_bar(dt = progenitor_wide_pm, metric_name = "GPS-M",
                              diff_col = "diff_pleio10", use_percent = TRUE)
+res_pm$plot$layers <- res_pm$plot$layers[
+  !sapply(res_pm$plot$layers, function(x) inherits(x$geom, "GeomBracket"))
+]
 res_pm$plot
 res_pm$stat_test
 
@@ -303,7 +314,7 @@ fwrite(feature_all_output, file = sprintf("%s/feature_progenitor_pleio10.csv", f
 
 ################Duplication (Ensembl Compara)####################--------------------
 #1 load data------------------------
-paralog_tbl <- fread("biomaRt_paralogs.txt")
+paralog_tbl <- fread("Duplication/biomaRt_paralogs.txt")
 names(paralog_tbl) <- c("gene_id", "gene_name",
                         "paralog_gene_id", "paralog_gene_name",
                         "lca", "pid_target", "pid_query")
@@ -1161,10 +1172,7 @@ table_dup_ensembl_list <- lapply(list("ens_dup_human", "ens_dup_primate", "ens_d
 names(table_dup_ensembl_list) <- c("ens_dup_human", "ens_dup_primate", "ens_dup_mammal", "ens_dup_vertebrate_older", 
                                    "ens_dup_all")
 table_dup_ensembl_list$ens_dup_human[c(1,2,4,6),]
-table_dup_ensembl_list$ens_dup_primate[c(1,2,4,6),]
-table_dup_ensembl_list$ens_dup_mammal
-table_dup_ensembl_list$ens_dup_vertebrate_older
-table_dup_ensembl_list$ifhsdfinder
+
 
 for (i in names(table_dup_ensembl_list)) {
   fwrite(table_dup_ensembl_list[[i]][c(1,2,4,6),], file = sprintf("%s/%s.csv", figure_file, i))
@@ -1197,8 +1205,8 @@ write.csv(table_dup, file = sprintf("%s/table_dup.csv", figure_file), row.names 
 
 #############Duplication (paper 2026)#########################
 #1 load data----------------
-GPS_hsd_merge <- fread("GPS_hsd_merge.csv", na.strings = c("", "NA"))
-data_paper2026 <- fread("Gene_Age_DataFrame.tsv")
+GPS_hsd_merge <- fread("Duplication/GPS_hsd_merge.csv", na.strings = c("", "NA"))
+data_paper2026 <- fread("Duplication/Gene_Age_DataFrame.tsv")
 head(data_paper2026)
 
 count_bioprocess <- function(x) {
@@ -1455,9 +1463,7 @@ plot_paper_list5 <- list(
                                        age_var = "AgeBin_group5", dup_var = "ens_dup_vertebrate_older", log_transform = TRUE, ylab = "log(Biological Process Count)"))
 
 plot_paper_list5$paper
-plot_paper_list5$mammal
-plot_paper_list5$primate
-plot_paper_list5$vertebrate
+
 
 
 plot_pn5 <- list(
@@ -1474,18 +1480,15 @@ plot_pn5 <- list(
                                        age_var = "AgeBin_group5", dup_var = "ens_dup_vertebrate_older", log_transform = F, ylab = "GPS-N"))
 
 plot_pn5$mammal
-plot_pn5$paper
-plot_pn5$vertebrate
-plot_pn5$primate
 
 
 for(i in names(plot_paper_list5)){
   ggsave(plot = plot_paper_list5[[i]], width = 5, height = 4, device = cairo_pdf,
-         filename = sprintf("%s/Duplication/group5_paper2026_%s.pdf", figure_file, i))
+         filename = sprintf("%s/group5_paper2026_%s.pdf", figure_file, i))
 }
 
 for(i in names(plot_pn5)){
   ggsave(plot = plot_pn5[[i]], width = 5, height = 4, device = cairo_pdf,
-         filename = sprintf("%s/Duplication/group5_pn_%s.pdf", figure_file, i))
+         filename = sprintf("%s/group5_pn_%s.pdf", figure_file, i))
 }
 
