@@ -1,6 +1,6 @@
 #1 load packages and set variables-------
 setwd("/path/to/Gene_pleiotropy-main/Data")
-figure_file <- "/path/to/Gene_pleiotropy-main/Output/Figure2"
+figure_file <- "/path/to/Gene_pleiotropy-main/Output/Gene_pleiotropy_and_gene_age"
 if (!dir.exists(figure_file)) {
   dir.create(figure_file, recursive = TRUE)
 }
@@ -324,7 +324,7 @@ age_protein <- list(pm_ld = violin_func(data = pleiotropy_maindata,
                                         p_value = pm_ld_p, cor = pm_ld_cor, x_label = phylostrata),
                     pn_ld = violin_func(data = pleiotropy_maindata,
                                         age_name = "age_protein_num", score = "pn_ld", ylimit = c(0,20),
-                                        p_value = pm_ld_p, cor = pm_ld_cor, x_label = phylostrata))
+                                        p_value = pn_ld_p, cor = pn_ld_cor, x_label = phylostrata))
 
 age_protein_pnpm <- grid.arrange(age_protein$pn_ld, age_protein$pm_ld, ncol = 2)
 age_protein_pnpm
