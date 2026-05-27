@@ -161,3 +161,86 @@ chr_percent$pn_ld$plot
 
 ggsave(plot = chr_percent$pn_ld$plot, width = 5, height = 8, device = cairo_pdf, 
        filename = sprintf("%s/figure1_chr_percent_pn.pdf",figure_file))
+
+#4 enrichment of high GPS genes in pleiotropy-enriched genomic hotspots-------------------
+load("pleiotropy_maindata.RData")
+head(pleiotropy_maindata$pm_ld)
+
+#library(biomaRt)
+#mart <- useEnsembl(biomart = "ensembl", dataset = "hsapiens_gene_ensembl", mirror = "useast")
+#regions <- c("6:28477797:33448354",   # broad MHC/HLA region
+#             "16:29603941:30198600",  # 16p11.2 BP4-BP5
+#             "22:18600000:21500000",  # 22q11.2 proximal A-D
+#             "22:35100000:51304566",  # 22q13 
+#             "17:43600000:44500000"   # 17q21.31 inversion region
+#)
+
+#genes <- getBM(attributes = c("chromosome_name", "start_position", "end_position",
+#                              "strand", "hgnc_symbol", "ensembl_gene_id"),
+#               filters = "chromosomal_region",
+#               values = regions,  mart = mart)
+
+genes <- fread("chromosome_enrichment_geneset.csv")
+head(genes)
+
+# Clean a bit
+genes <- genes[genes$chromosome_name %in% c("6", "16", "17", "22"), ]
+genes <- unique(genes)
+head(genes)
+setDT(genes)
+
+gene_list <- list(gene_MHC = unique(na.omit(genes[chromosome_name == 6 & hgnc_symbol != "",]$hgnc_symbol)),
+                  gene_16 = unique(na.omit(genes[chromosome_name == 16 & hgnc_symbol != "",]$hgnc_symbol)),
+                  gene_17 = unique(na.omit(genes[chromosome_name == 17 & hgnc_symbol != "",]$hgnc_symbol)),
+                  gene_22 = unique(na.omit(genes[chromosome_name == 22 & hgnc_symbol != "",]$hgnc_symbol)))
+
+
+fisher_test <- function(U, A, B) {
+  
+  U <- unique(U)
+  A <- unique(intersect(A, U))
+  B <- unique(intersect(B, U))
+  
+  m <- length(A)
+  n <- length(B)
+  N <- length(U)
+  k <- length(intersect(A, B))
+  
+  a <- k
+  b <- m - k
+  c <- n - k
+  d <- N - m - n + k
+  cont <- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE,
+                 dimnames = list(A = c("inA", "notInA"), B = c("inB", "notInB")))
+  
+  
+  fisher_p <- tryCatch(
+    fisher.test(cont)$p.value,
+    error = function(e) NA_real_
+  )
+  
+  fisher_or <- tryCatch(
+    fisher.test(cont)$estimate,
+    error = function(e) NA_real_
+  )
+  
+  
+  tab <- data.table(a = a, b = b, c = c, d = d, fisher_p = sprintf("%.2e", fisher_p), fisher_or = sprintf("%.2f", fisher_or))
+  return(tab)
+}
+
+pn_high <- pleiotropy_maindata$pn_ld[pleio_class3 == "High pleiotropy"]$gene
+fisher_test_list_pn <- list(gene_MHC = fisher_test(U = pleiotropy_maindata$pn_ld$gene, A = pn_high, B = gene_list$gene_MHC),
+                            gene_16 = fisher_test(U = pleiotropy_maindata$pn_ld$gene, A = pn_high, B = gene_list$gene_16),
+                            gene_17 = fisher_test(U = pleiotropy_maindata$pn_ld$gene, A = pn_high, B = gene_list$gene_17),
+                            gene_22 = fisher_test(U = pleiotropy_maindata$pn_ld$gene, A = pn_high, B = gene_list$gene_22)) %>% rbindlist
+
+fisher_test_list_pn
+
+pm_high <- pleiotropy_maindata$pm_ld[pleio_class3 == "High pleiotropy"]$gene
+fisher_test_list_pm <- list(gene_MHC = fisher_test(U = pleiotropy_maindata$pm_ld$gene, A = pm_high, B = gene_list$gene_MHC),
+                            gene_16 = fisher_test(U = pleiotropy_maindata$pm_ld$gene, A = pm_high, B = gene_list$gene_16),
+                            gene_17 = fisher_test(U = pleiotropy_maindata$pm_ld$gene, A = pm_high, B = gene_list$gene_17),
+                            gene_22 = fisher_test(U = pleiotropy_maindata$pm_ld$gene, A = pm_high, B = gene_list$gene_22)) %>% rbindlist
+
+fisher_test_list_pm
