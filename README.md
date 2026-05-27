@@ -79,7 +79,7 @@ unzip main.zip
 cd Gene_pleiotropy-main
 unrar x Data/LOLACore/LOLACore.part01.rar Data/LOLACore
 unrar x Data/RandomForest/forest_13var_seed123_250114.part01.rar Data/RandomForest
-nrar x Data/mediation_list_pn.rar Data
+unrar x Data/mediation_list_pn.rar Data
 unrar x Data/genehancer_all.rar Data
 unrar x Data/CRISPRGeneEffect/CRISPRGeneEffect.part01.rar Data/CRISPRGeneEffect
 unrar x Data/AgingGPS/AgingGPS.part1.rar Data/AgingGPS
