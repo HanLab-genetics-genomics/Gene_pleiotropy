@@ -1,5 +1,5 @@
 
-# Tracing time’s imprint: unveiling the pervasive pleiotropy of evolutionarily old genes in human diseases and traits
+# A gene-level framework for statistical pleiotropy in humans reveals evolutionary architecture of pleiotropic genes and aging-related biology
 
 ## Overview
 This repository contains the data and source code used to produce the manuscript’s main analysis. It includes:
