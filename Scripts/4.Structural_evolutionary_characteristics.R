@@ -309,7 +309,7 @@ pn_constrait_percent_list <- list(lof_tolerant = group_conpercent_func(data =use
 pn_constrait_percent_list$lof_tolerant$plot
 
 ggsave(plot = pn_constrait_percent_list$lof_tolerant$plot, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure3_lof_tolerant_pn.pdf",figure_file))
+       filename = sprintf("%s/figure2_lof_tolerant_pn.pdf",figure_file))
 
 ####essential genes--------------
 group_conpercent_func_gse <- function(data = hopsgene_ageburden_cut_genemetrics$pn_ld, x_label = "", ifscale = T,
@@ -489,9 +489,9 @@ percent_duplicatedgenes$pleio_pn
 percent_duplicatedgenes$age
 
 ggsave(plot = percent_duplicatedgenes$pleio_pn, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure3_duplicatedgenes_pn.pdf",figure_file))
+       filename = sprintf("%s/figure2_duplicatedgenes_pn.pdf",figure_file))
 ggsave(plot = percent_duplicatedgenes$age, width = 4.8, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure3_duplicatedgenes_age.pdf",figure_file))
+       filename = sprintf("%s/figure2_duplicatedgenes_age.pdf",figure_file))
 
 ###p for trend across pleio and age groups-----------------
 library(rstatix)
@@ -604,7 +604,7 @@ hsd_box <- list(pleio_pn = hsd_box_func(data = pleiotropy_maindata$pn_ld[, ifhsd
 hsd_box$pleio_pn$plot
 
 ggsave(plot = hsd_box$pleio_pn$plot, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure3_hsd_pleio_pn.pdf",figure_file))
+       filename = sprintf("%s/figure2_hsd_pleio_pn.pdf",figure_file))
 
 ###gene length-------------
 hsd_box_func2 <- function(data = pleiotropy_maindata$pn_ld, x_label = "", scale_y = F,
@@ -1143,5 +1143,5 @@ med_plot <-  ggplot(forest_data, aes(x = factor(label, levels = label), y = prop
         panel.border = element_blank()) 
 med_plot
 ggsave(med_plot, width = 4, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure3_mediation_prop_sigsingel_pn.pdf",figure_file))
+       filename = sprintf("%s/figure2_mediation_prop_sigsingel_pn.pdf",figure_file))
 
