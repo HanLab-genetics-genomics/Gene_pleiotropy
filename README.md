@@ -11,7 +11,9 @@ Seven scripts (one per main figure) that generate the figures from the input dat
 * [Gene regulatory circuitry](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/5.Gene_regulatory_circuitry.R): Complex gene regulatory circuitry and interaction architectures in highly pleiotropic and evolutionarily older genes.
 * [Epigenomic modifications](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/6.Epigenomic_modifications.R): Active epigenomic modifications in highly pleiotropic and evolutionarily older genes.
 * [Functional characterization](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/7.Functional_characterization.R): Functional characterization of highly pleiotropic and evolutionarily older genes.
-* [Drug development](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/8.Drug_development.R): Pleiotropy evidence contributes to drug development.
+* [AgingGPS](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/8.AgingGPS.R): Aging-specific pleiotropy scores.
+* [Duplication](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/9.Duplication.R): Gene pleiotropy and gene dupliation (supporting analyses).
+* [Other](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/10.Other.R): Supporting analyses in Supplementary Notes
 
 ### Data:
 Input datasets and processed files required to reproduce the results.
@@ -41,9 +43,8 @@ Input datasets and processed files required to reproduce the results.
 | **Datasets for [Functional characterization]** |  | 
 | Gene effect score (unrar first) |  [CRISPRGeneEffect](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/CRISPRGeneEffect) |
 | Metabolic processes in Last Universal Common Ancestor (LUCA) |  [LUCA](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/41559_2024_2461_MOESM4_ESM.tsv) |
-| **Datasets for [Drug development]** |  | 
-| FDA approved drug targets |  [FDA approved drug targets](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/fda_2023.xlsx) |
-| Data for durg Target-Indication pairs |  [genetic_support-main](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/genetic_support-main) |
+| **Datasets for [AgingGPS]** |  [AgingGPS](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/AgingGPS) |
+| **Datasets for [Duplication]** |  [Duplication](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/Duplication) |
 
 ### Output:
 All figures are saved as PDF files with informative names that map directly to the manuscript figures (e.g. figure1_*, figure2_*) in [**Output.**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Output/)
@@ -79,6 +80,8 @@ unrar x Data/RandomForest/forest_13var_seed123_250114.part01.rar Data/RandomFore
 nrar x Data/mediation_list_pn.rar Data
 unrar x Data/genehancer_all.rar Data
 unrar x Data/CRISPRGeneEffect/CRISPRGeneEffect.part01.rar Data/CRISPRGeneEffect
+unrar x Data/AgingGPS/AgingGPS.part01.rar Data/AgingGPS
+unrar x Data/Duplication/Duplication.part01.rar Data/Duplication
 ```
 - **Install the required R packages by running "[1.Install_packages.R](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/1.Install_packages.R)**
   
