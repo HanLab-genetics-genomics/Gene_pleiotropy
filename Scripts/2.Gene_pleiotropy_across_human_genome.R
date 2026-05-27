@@ -1,6 +1,6 @@
 #1 load packages and set variables-------
 setwd("/path/to/Gene_pleiotropy-main/Data")
-figure_file <- "/path/to/Gene_pleiotropy-main/Output/Figure1"
+figure_file <- "/path/to/Gene_pleiotropy-main/Output/GPS"
 if (!dir.exists(figure_file)) {
   dir.create(figure_file, recursive = TRUE)
 }
@@ -56,11 +56,11 @@ hist_pn
 hist_pm
 
 ggsave(plot = hist_pn, width = 5, height = 2.5, device = cairo_pdf ,
-       filename = sprintf("%s/figure1B_score_distribution_histograms_pn.pdf",figure_file)) 
+       filename = sprintf("%s/figure1_score_distribution_histograms_pn.pdf",figure_file)) 
 ggsave(plot = hist_pm, width = 5, height = 2.5, device = cairo_pdf ,
-       filename = sprintf("%s/figure1B_score_distribution_histograms_pm.pdf",figure_file)) 
+       filename = sprintf("%s/figure1_score_distribution_histograms_pm.pdf",figure_file)) 
 
-##figure1C--------------
+##correlation--------------
 score_data <- merge(pleiotropy_maindata$pm_ld[, .(gene, use_score, pleio_class3)], 
                     pleiotropy_maindata$pn_ld[, .(gene, use_score, pleio_class3)], by = "gene") %>%
   setnames(., names(.), c("gene", "pm", "pm_class3", "pn", "pn_class3")) %>%
@@ -103,11 +103,11 @@ xplot
 yplot
 
 ggsave(plot = sp, width = 5, height = 5, device = cairo_pdf ,
-       filename = sprintf("%s/figure1C_score_distribution_sp.pdf",figure_file)) 
+       filename = sprintf("%s/figure1_score_distribution_sp.pdf",figure_file)) 
 ggsave(plot = yplot, width = 2, height = 5, device = cairo_pdf ,
-       filename = sprintf("%s/figure1C_score_distribution_yplot.pdf",figure_file)) 
+       filename = sprintf("%s/figure1_score_distribution_yplot.pdf",figure_file)) 
 ggsave(plot = xplot, width = 5, height = 2, device = cairo_pdf ,
-       filename = sprintf("%s/figure1C_score_distribution_xplot.pdf",figure_file)) 
+       filename = sprintf("%s/figure1_score_distribution_xplot.pdf",figure_file)) 
 
 ##figure1D--------------
 mapping <- c("1" = 249, "2" = 242, "3" = 198, "4" = 190, "5" = 182, "6" = 171, "7" = 159, "8" = 145,
@@ -158,7 +158,6 @@ chr_percent <- list(
 )
 
 chr_percent$pn_ld$plot
-chr_percent$pm_ld$plot
 
 ggsave(plot = chr_percent$pn_ld$plot, width = 5, height = 8, device = cairo_pdf, 
-       filename = sprintf("%s/figure1D_chr_percent_pn.pdf",figure_file))
+       filename = sprintf("%s/figure1_chr_percent_pn.pdf",figure_file))
