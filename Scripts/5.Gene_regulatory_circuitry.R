@@ -19,8 +19,8 @@ options(warn = -1)
 
 #2 load data--------------------------
 load("pleiotropy_maindata.RData")
-#3 figure4-----------------------
-##figure4A----------------------
+#3 figures-----------------------
+##QTL----------------------
 ###load data and functions--------------------
 qtl_color <- lighten(brewer.pal(n = 10, name = 'PuOr'), 0.8)
 qtl_color2 <- lighten(brewer.pal(n = 10, name = 'PiYG'), 0.8)
@@ -144,13 +144,8 @@ percent_sgenes$age
 
 ggsave(plot = percent_egenes$pleio, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure4_cisegenes_pn.pdf",figure_file))
-ggsave(plot = percent_egenes$age, width = 4.8, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_cisegenes_age.pdf",figure_file))
-
 ggsave(plot = percent_sgenes$pleio, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure4_cissgenes_pn.pdf",figure_file))
-ggsave(plot = percent_sgenes$age, width = 4.8, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_cissgenes_age.pdf",figure_file))
 
 ###trans-eGenes----------------------------------
 trans_eqtl <- fread("eqtlgen_transeqtl.txt")
@@ -205,14 +200,8 @@ percent_transegenes <- list(pleio_n = percent_plot(data = transeqtl_prop$pn_ld$t
 percent_transegenes$pleio_n
 percent_transegenes$age
 
-ggsave(plot = percent_transegenes$pleio_n, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_transegenes_pn.pdf",figure_file))
-ggsave(plot = percent_transegenes$age, width = 4.8, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_transegene_age.pdf",figure_file))
 
-
-##figure4B&4C----------------------
-###load data
+##gene specificity----------------------
 tau_score <- fread("Tau_gene_V8.csv")
 tau_merge <- lapply(list("pm_ld", "pn_ld"), function(x, data = pleiotropy_maindata){
   data_merge <- merge(data[[x]][, .(gene, ensemblid, pleio_class3, age_stage4)], tau_score, by.x = "ensemblid", by.y = "gene_id", all.x = T)
@@ -221,42 +210,78 @@ names(tau_merge) <- c("pm_ld", "pn_ld")
 tau_merge$pn_ld$ifspecific <- ifelse(tau_merge$pn_ld$tau > 0.8, "1", "2")
 tau_merge$pm_ld$ifspecific <- ifelse(tau_merge$pm_ld$tau > 0.8, "1", "2")
 
-##ridge plot
-library(ggridges)
-tau_ridge_func <- function(data = tau_merge$pn_ld, group = "pleio_class3", color_values = pleio_color){
-  data$pleio_class3 <- factor(data$pleio_class3, levels = c("High pleiotropy", "Intermediate pleiotropy", "Low pleiotropy"))
-  plot <- ggplot(data = data, aes(x = tau, y = !!sym(group), fill = !!sym(group))) +
-    geom_density_ridges() +
-    theme_ridges() + 
-    scale_fill_manual(values = color_values) +
-    labs(y = "", title = "", x = "Tissue-specific τ index") +
+group_conpercent_func <- function(data = hopsgene_ageburden_cut_genemetrics$pn_ld, x_label = "", ifscale = T,
+                                  y_label = "Percents of intolerant genes classified by LOEUF (%)",
+                                  group = "pleio_class3", x_var = "LOEUF_class",
+                                  x_text = c("Low", "Intermediate", "High"),
+                                  color_value, test_name = "pm",
+                                  stat_test = test, test_list = c("Low pleiotropy", "High pleiotropy")){
+  
+  freq_data <- table(data[,get(x_var)], data[, get(group)]) %>%
+    prop.table(., margin = 2) %>%
+    as.data.table(.) %>%
+    setnames(., names(.), c("feature", "pleio", "freq")) %>%
+    .[feature == "1", list(pleio, freq = freq*100,freq_name = sprintf("%.2f", freq*100))]
+  
+  freq_data$pleio <- factor(freq_data$pleio, levels = freq_data$pleio)
+  
+  plot <- ggplot(data = freq_data) + theme_bw() +
+    geom_bar(aes(x = pleio, y = freq, fill = pleio), stat = "identity", width = 0.9) +
+    scale_fill_manual(values = color_value) +
+    geom_signif(aes(x = pleio, y = freq),
+                comparisons = list(test_list), color = "grey20",
+                #map_signif_level = TRUE,
+                annotations = stat_test[[test_name]]) +
+    geom_text(aes(x = pleio, y = freq, label = freq_name), vjust = 1.5, color = "grey30", fontface = "bold", size = 6) +
+    labs(y = y_label, title = " ", x = x_label) +
     theme(text = element_text(size = 12, color = "black", face = "bold"),
-          axis.title = element_text(size = 15, face = "bold", ), 
-          axis.text.x = element_text(size = 12, color = "black", face = "bold"), 
-          axis.text.y = element_text(size = 12, color = "black", face = "bold"), 
-          axis.ticks = element_blank(), axis.line.x = element_line(colour = "grey50"),
+          axis.title = element_text(size = 15, face = "bold"),
+          axis.text = element_text(size = 12, color = "black", face = "bold"),
+          axis.ticks = element_blank(), axis.line = element_line(colour = "grey50"),
           panel.grid = element_blank(), panel.grid.minor = element_blank(),
-          legend.position = "none", 
+          legend.position = "none",
           panel.border = element_blank(),
-          plot.title = element_text(size=15, hjust=0.5),
-          panel.grid.major = element_blank()) +
-    scale_x_continuous(breaks = c(0,0.2,0.4,0.6,0.8,1), labels = c(0,0.2,0.4,0.6,0.8,1))
-  return(plot)
+          panel.grid.major = element_blank())+
+    scale_x_discrete(labels = x_text)
+  
+  return(list(plot_data = freq_data, plot = plot))
 }
 
-tau_pleio_n <- tau_ridge_func(data = tau_merge$pn_ld[!is.na(tau),], group = "pleio_class3", color_values = rev(pleio_color))
-tau_pleio_m <- tau_ridge_func(data = tau_merge$pm_ld[!is.na(tau),], group = "pleio_class3", color_values = rev(pleio_color))
-tau_age <- tau_ridge_func(data = tau_merge$pn_ld[!is.na(age_stage4) & !is.na(tau),], group = "age_stage4", color_values = age_color) 
+pn_count <- table(tau_merge$pn_ld[, .(pleio_class3, ifspecific)])
+pm_count <- table(tau_merge$pm_ld[, .(pleio_class3, ifspecific)])
+age_count <- table(tau_merge$pn_ld[, .(age_stage4, ifspecific)])
 
-tau_pleio_n
-tau_age
 
-ggsave(plot = tau_pleio_n, width = 5, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_tau_ridge_pn.pdf",figure_file))
-ggsave(plot = tau_age, width = 5, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_tau_ridge_age.pdf",figure_file))
+test <- list(
+  pn = pairwise.prop.test(pn_count[,"1"],
+                          c(sum(pn_count["Low pleiotropy", ]), sum(pn_count["Intermediate pleiotropy",]), sum(pn_count["High pleiotropy",])),
+                          p.adjust.method = "fdr")$p.value[2,1] %>% sprintf("%.2e", .),
+  pm = pairwise.prop.test(pm_count[,"1"],
+                          c(sum(pm_count["Low pleiotropy", ]), sum(pm_count["Intermediate pleiotropy",]), sum(pm_count["High pleiotropy",])),
+                          p.adjust.method = "fdr")$p.value[2,1] %>% sprintf("%.2e", .),
+  age = pairwise.prop.test(age_count[,"1"],
+                           c(sum(age_count["Euteleostomi", ]), sum(age_count["Tetrapoda",]),
+                             sum(age_count["Amniota",]), sum(age_count["Eutheria",])),
+                           p.adjust.method = "fdr")$p.value[3,1] %>% sprintf("%.2e", .))
 
-##figure4D----------------------
+tau_percent_plot <- list(pn = group_conpercent_func(data = tau_merge$pn_ld,
+                                                    y_label = "Proportion of genes\nwith tissus specificity (%)",
+                                                    x_var = "ifspecific", color_value = pleio_color, test_name = "pn"),
+                         pm = group_conpercent_func(data = tau_merge$pm_ld,
+                                                    y_label = "Proportion of genes\nwith tissus specificity (%)",
+                                                    x_var = "ifspecific", color_value = pleio_color, test_name = "pm"),
+                         age = group_conpercent_func(data = tau_merge$pn_ld[!is.na(age_stage4),], group = "age_stage4", color_value = age_color,
+                                                     y_label = "Proportion of genes\nwith tissus specificity (%)",
+                                                     x_var = "ifspecific", x_text = x_text, test_list = age_test, test_name = "age"))
+
+
+tau_percent_plot$pn
+
+
+ggsave(plot = tau_percent_plot$pn$plot, width = 3.2, height = 5, device = cairo_pdf,
+       filename = sprintf("%s/figure4_tau_percent_pn.pdf",figure_file))
+
+##supplementary figure of gene expression----------------------
 express_hist <- function(id = "FTO", data = tau_merge$pn_ld, plot_title = "FTO"){
   
   plot_data <- data.table(tissue = names(data)[-c(1:5, 36)],
@@ -297,12 +322,8 @@ plot_hist <- list(
 plot_hist$PRKAR1A
 plot_hist$CST9L
 
-ggsave(plot = plot_hist[[1]], width = 10, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_tissue_express_PRKAR1A.pdf",figure_file))
-ggsave(plot = plot_hist[[2]], width = 1, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_tissue_express_CST9L.pdf",figure_file))
 
-##figure4E&4F----------------------
+##TF regulation----------------------
 ###load data-----------------
 library(dorothea); library(OmnipathR); library(decoupleR)
 tf <- fread("TFC2_16102023b.tsv") %>%
@@ -419,10 +440,9 @@ tf_sum_box$age$plot
 
 ggsave(plot = tf_sum_box$pleio_n$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure4_tf_sum_pn.pdf",figure_file))
-ggsave(plot = tf_sum_box$age$plot, width = 4.8, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_tf_sum_age.pdf",figure_file))
 
-##figure4G&4H----------------------
+
+##enhancer (supplementary figures)----------------------
 ###load data----------------------
 enhancer_annota <- fread("genehancer_annotation.csv") #244737
 length(unique(enhancer_annota$name))
@@ -547,13 +567,8 @@ cre_box <- list(pleio_pn = enhancer_box_func(data = cre_merge_all$pn_ld, color_v
 cre_box$pleio_pn$plot
 cre_box$age$plot
 
-ggsave(plot = cre_box$pleio_pn$plot, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_enhancer_box_pn.pdf",figure_file))
-ggsave(plot = cre_box$age$plot, width = 4.8, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_enhancer_box_age.pdf",figure_file))
 
-
-##figure4I&4J----------------------
+##PPI----------------------
 ###load data------------------
 ogee_pip <- fread("connectivity.txt") %>%
   .[taxon_id == 9606, .(gene, ogeepip_score = score, ogee_connectivity = connectivity)]
@@ -629,5 +644,4 @@ pip_box$age_n$plot
 
 ggsave(plot = pip_box$pleio_n$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure4_pip_pn.pdf",figure_file))
-ggsave(plot = pip_box$age_n$plot, width = 4.8, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_pip_age.pdf",figure_file))
+
