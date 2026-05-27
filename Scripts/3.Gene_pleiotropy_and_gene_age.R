@@ -20,7 +20,7 @@ options(warn = -1)
 
 #2 load data--------------------------
 load("pleiotropy_maindata.RData")
-#3 figure2------------------
+#3 figures------------------
 ##figure2A--------------------
 head(pleiotropy_maindata$pm_ld)
 
@@ -133,7 +133,7 @@ combined_plot1 <- plot_grid(upper_plot, main_plot, lower_plot, ncol = 1, align =
 combined_plot1
 
 ggsave(plot = combined_plot1, width = 10, height = 7, device = cairo_pdf,
-       filename = sprintf("%s/pn_ld_violin_geneorigin.pdf",figure_file))
+       filename = sprintf("%s/figure2A_pn_ld_violin_geneorigin.pdf",figure_file))
 
 
 #4 Supplementary figures for gene age and gene pleiotropy ----------------------------
@@ -245,7 +245,6 @@ rm(combined_plot1, combined_plot2, cor_agewithscore_pm, cor_agewithscore_pn, gen
    upper_plot, main_plot, lower_plot, median, p , p2, hsd_merge2, hopsgene_ageburden_cut_genemetrics, violin_data)
 
 ##violin plots other gene age datasets----------------
-library(ggstatsplot)
 head(pleiotropy_maindata$pm_ld)
 
 violin_func <- function(data = pleiotropy_maindata, age_name = "age_protein_num",
