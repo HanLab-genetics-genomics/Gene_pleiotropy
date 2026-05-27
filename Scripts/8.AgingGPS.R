@@ -761,3 +761,337 @@ ggsave(plot = plot_pm, width = 10, height = 10, device = cairo_pdf,
        filename = sprintf("%s/PPI_plot_pm.pdf", figure_file))
 
 
+#5. compare with agingGWAS-rank score------------------
+##5.1 load data--------------------
+agingGPS <- fread("/home/liumy/pleiotropy/aging_revision/results/AgingGPS/agingGPS.csv", na.strings = c("", "NA"))
+agingGPS[, `:=`(if_gerogenes = ifelse(gene %in% gerogenes, 1, 0),
+                if_gerosuppressor = ifelse(gene %in% gerosuppressor, 1, 0),
+                
+                ifdrug_OTG = ifelse(gene %in% unique(aging_drug$symbol), 1, 0),
+                ifknow_aging = ifelse(gene %in% known_aging_genes, 1, 0))]
+
+agingGPS_use <- agingGPS
+setnames(agingGPS_use, old = "gene", new = "SYMBOL", skip_absent = TRUE)
+gene_include <- intersect(magma_all$SYMBOL, agingGPS_use$SYMBOL)
+
+compare_dt <- merge(agingGPS_use, agegwas_gene_score, by = "SYMBOL", all = TRUE)
+nrow(compare_dt) #18601
+head(compare_dt)
+
+compare_dt_16447 <- compare_dt[SYMBOL %in% gene_include,]
+
+for (j in c("ageGWAS_count_top100", "ageGWAS_count_top200", "ageGWAS_count_top500",
+            "ageGWAS_count_top1000", "ageGWAS_count_fdr", "ageGWAS_count_bonf")) {
+  compare_dt_16447[is.na(get(j)), (j) := 0L]}
+head(compare_dt_16447) #18601
+
+##5.2 correlations-------------------
+make_cor_table <- function(dt, x_vars, y_vars, y_labels = NULL, method = "spearman") {
+  dt <- as.data.table(copy(dt))
+  
+  if (is.null(y_labels)) y_labels <- y_vars
+  stopifnot(length(y_vars) == length(y_labels))
+  
+  res <- rbindlist(lapply(x_vars, function(xv) {
+    rbindlist(lapply(seq_along(y_vars), function(i) {
+      yv <- y_vars[i]
+      yl <- y_labels[i]
+      
+      x <- dt[[xv]]
+      y <- dt[[yv]]
+      
+      ok <- is.finite(x) & is.finite(y)
+      n <- sum(ok)
+      
+      if (n < 3 || length(unique(x[ok])) < 2 || length(unique(y[ok])) < 2) {
+        return(data.table(
+          gps_metric = xv,
+          comparator = yl,
+          n = n,
+          rho = NA_real_,
+          p = NA_real_
+        ))
+      }
+      
+      ct <- suppressWarnings(cor.test(x[ok], y[ok], method = method, exact = FALSE))
+      
+      data.table(
+        gps_metric = xv,
+        comparator = yl,
+        n = n,
+        rho = unname(ct$estimate),
+        p = ct$p.value
+      )
+    }))
+  }))
+  
+  #res[, p_adj := p.adjust(p, method = "BH")]
+  res[, rho_round := round(rho, 3)]
+  res[, p_fmt := fifelse(is.na(p), NA_character_,
+                         fifelse(p == 0, "<2.2e-16", formatC(p, format = "e", digits = 2)))]
+  #res[, p_adj_fmt := fifelse(is.na(p_adj), NA_character_,
+  #                           fifelse(p_adj == 0, "<2.2e-16", formatC(p_adj, format = "e", digits = 2)))]
+  
+  return(res[])
+}
+
+cor_table <- make_cor_table(
+  dt = compare_dt_16447,
+  x_vars = c("pn_ld_aging", "pm_ld_aging"),
+  y_vars = c("ageGWAS_count_top100", "ageGWAS_count_top200", "ageGWAS_count_top500",
+             "ageGWAS_count_top1000", "ageGWAS_count_fdr", "ageGWAS_count_bonf"),
+  #y_labels = c("Age-GWAS top100 count", "Age-GWAS top200 count","Age-GWAS top500 count",
+  #             "Age-GWAS top1000 count", "Age-GWAS FDR count", "Age-GWAS Bonf count")
+  y_labels = c("ageGWAS_count_top100", "ageGWAS_count_top200", "ageGWAS_count_top500",
+               "ageGWAS_count_top1000", "ageGWAS_count_fdr", "ageGWAS_count_bonf")
+)
+
+cor_table
+
+fwrite(cor_table, file = sprintf("%s/agingGPS_GWASrank_cor.csv", figure_file))
+
+##5.2 model fit improvement-----------------
+compare_dt_scale <- compare_dt_16447[, `:=`(ageGWAS_count_top100_scale = scale(ageGWAS_count_top100),
+                                      ageGWAS_count_top200_scale = scale(ageGWAS_count_top200),
+                                      ageGWAS_count_top500_scale = scale(ageGWAS_count_top500),
+                                      ageGWAS_count_top1000_scale = scale(ageGWAS_count_top1000),
+                                      ageGWAS_count_fdr_scale = scale(ageGWAS_count_fdr),
+                                      ageGWAS_count_bonf_scale = scale(ageGWAS_count_bonf),
+                                      pn_ld_scale = scale(pn_ld_aging),
+                                      pm_ld_scale = scale(pm_ld_aging))]
+run_agingGPS_single_compare <- function(data, known_col = "known_aging_clinical_precedence", gwas_col  = "ageGWAS_count_top500_scale",
+                                        pn_col    = "pn_ld_scale", pm_col    = "pm_ld_scale") {
+  
+  dt <- as.data.frame(data)
+  dt <- dt[, c(known_col, gwas_col, pn_col, pm_col)]
+  colnames(dt) <- c("known", "gwas", "pn", "pm")
+  
+  dt$known <- as.integer(dt$known)
+  
+  
+  # helper: extract logistic result
+  get_logit <- function(fit, term, model_name) {
+    sm <- coef(summary(fit))
+    beta <- sm[term, "Estimate"]
+    se   <- sm[term, "Std. Error"]
+    p    <- sm[term, "Pr(>|z|)"]
+    
+    data.table(model = model_name, term = term,
+               beta = beta, se = se,
+               OR = exp(beta), OR_l95 = exp(beta - 1.96 * se), OR_u95 = exp(beta + 1.96 * se),
+               p = p, n = nobs(fit), AIC = AIC(fit))}
+  
+  
+  # helper: extract linear result
+  get_lm <- function(fit, term, model_name) {
+    sm <- coef(summary(fit))
+    beta <- sm[term, "Estimate"]
+    se   <- sm[term, "Std. Error"]
+    p    <- sm[term, "Pr(>|t|)"]
+    
+    data.table(model = model_name, term = term,
+               beta = beta, se = se, p = p, r2 = summary(fit)$r.squared, 
+               n = nobs(fit), AIC = AIC(fit))}
+  
+  
+  # 1. unadjusted logistic models
+  fit_pn <- glm(known ~ pn, data = na.omit(dt[, c("known", "pn")]), family = binomial())
+  fit_pm <- glm(known ~ pm, data = na.omit(dt[, c("known", "pm")]), family = binomial())
+  fit_gwas <- glm(known ~ gwas, data = na.omit(dt[, c("known", "gwas")]), family = binomial())
+  
+  
+  # 2. GPS ~ ageGWAS-rank score
+  lm_pn_gwas <- lm(pn ~ gwas, data = na.omit(dt[, c("pn", "gwas")]))
+  lm_pm_gwas <- lm(pm ~ gwas, data = na.omit(dt[, c("pm", "gwas")]))
+  
+  
+  # 3. adjusted models
+  # use same complete-case data for LRT
+  dt_pn <- na.omit(dt[, c("known", "gwas", "pn")])
+  fit_gwas_pn0 <- glm(known ~ gwas, data = dt_pn, family = binomial())
+  fit_gwas_pn <- glm(known ~ gwas + pn, data = dt_pn, family = binomial())
+  
+  dt_pm <- na.omit(dt[, c("known", "gwas", "pm")])
+  fit_gwas_pm0 <- glm(known ~ gwas, data = dt_pm, family = binomial())
+  fit_gwas_pm <- glm(known ~ gwas + pm, data = dt_pm, family = binomial())
+  
+  
+  # 4. LRT
+  lrt_pn <- anova(fit_gwas_pn0, fit_gwas_pn, test = "Chisq")
+  lrt_pm <- anova(fit_gwas_pm0, fit_gwas_pm, test = "Chisq")
+  
+  lrt <- data.table(added_term = c("agingGPS-N", "agingGPS-M"),
+                    deviance = c(lrt_pn$Deviance[2], lrt_pm$Deviance[2]),
+                    df = c(lrt_pn$Df[2], lrt_pm$Df[2]),
+                    p = c(lrt_pn$`Pr(>Chi)`[2], lrt_pm$`Pr(>Chi)`[2]),
+                    n = c(nobs(fit_gwas_pn), nobs(fit_gwas_pm)),
+                    AIC_reduced = c(AIC(fit_gwas_pn0), AIC(fit_gwas_pm0)),
+                    AIC_full = c(AIC(fit_gwas_pn), AIC(fit_gwas_pm)))
+  
+  lrt_format <- copy(lrt)
+  lrt_format[, deviance := sprintf("%.2f", deviance)]
+  lrt_format[, p := ifelse(p < 0.001, sprintf("%.2e", p), sprintf("%.3f", p))]
+  lrt_format[, AIC_reduced := sprintf("%.2f", AIC_reduced)]
+  lrt_format[, AIC_full := sprintf("%.2f", AIC_full)]
+  
+  
+  # 5. collect results
+  logistic <- rbind(get_logit(fit_pn, "pn", "agingGPS-N only"),
+                    get_logit(fit_pm, "pm", "agingGPS-M only"),
+                    get_logit(fit_gwas, "gwas", "GWAS only"),
+                    get_logit(fit_gwas_pn, "pn", "GWAS + agingGPS-N"),
+                    get_logit(fit_gwas_pn, "gwas", "GWAS + agingGPS-N"),
+                    get_logit(fit_gwas_pm, "pm", "GWAS + agingGPS-M"),
+                    get_logit(fit_gwas_pm, "gwas", "GWAS + agingGPS-M"))
+  
+  logistic_format <- copy(logistic)
+  logistic_format[, term := case_when(
+    term == "gwas" ~ "agingGWAS-rank score",
+    term == "pn"   ~ "agingGPS-N",
+    term == "pm"   ~ "agingGPS-M",
+    TRUE           ~ term)]
+  logistic_format[, beta := sprintf("%.2f", beta)]
+  logistic_format[, se := sprintf("%.2f", se)]
+  logistic_format[, OR := sprintf("%.2f", OR)]
+  logistic_format[, OR_l95 := sprintf("%.2f", OR_l95)]
+  logistic_format[, OR_u95 := sprintf("%.2f", OR_u95)]
+  logistic_format[, p := ifelse(p < 0.001, sprintf("%.2e", p), sprintf("%.3f", p))]
+  logistic_format[, AIC := sprintf("%.2f", AIC)]
+  
+  
+  linear <- rbind(get_lm(lm_pn_gwas, "gwas", "agingGPS-N ~ GWAS"),
+                  get_lm(lm_pm_gwas, "gwas", "agingGPS-M ~ GWAS"))
+  
+  linear_format <- copy(linear)
+  linear_format[, beta := sprintf("%.2f", beta)]
+  linear_format[, se := sprintf("%.2f", se)]
+  linear_format[, p := ifelse(p < 0.001, sprintf("%.2e", p), sprintf("%.3f", p))]
+  linear_format[, r2 := sprintf("%.2f", r2)]
+  linear_format[, AIC := sprintf("%.2f", AIC)]
+  
+  return(list(logistic = logistic_format,
+              linear = linear_format,
+              lrt = lrt_format,
+              models = list(fit_pn = fit_pn, fit_pm = fit_pm, fit_gwas = fit_gwas,
+                            lm_pn_gwas = lm_pn_gwas, lm_pm_gwas = lm_pm_gwas,
+                            fit_gwas_pn = fit_gwas_pn, fit_gwas_pm = fit_gwas_pm)))
+}
+
+make_agingGPS_GWASrank_table <- function(data, top = 500,
+                                         known_col = "known_aging_clinical_precedence",
+                                         pn_col = "pn_ld_scale",
+                                         pm_col = "pm_ld_scale",
+                                         gwas_prefix = "ageGWAS_count_top",
+                                         gwas_suffix = "_scale") {
+  
+  library(data.table)
+  
+  gwas_col <- paste0(gwas_prefix, top, gwas_suffix)
+  
+  res <- run_agingGPS_single_compare(data = data,
+                                     known_col = known_col,
+                                     gwas_col = gwas_col,
+                                     pn_col = pn_col,
+                                     pm_col = pm_col)
+  
+  logistic <- copy(res$logistic)
+  linear <- copy(res$linear)
+  lrt <- copy(res$lrt)
+  
+  # GPS only
+  gps_only <- logistic[model %in% c("agingGPS-N only", "agingGPS-M only"),
+                       .(GPS = term,
+                         GPS_only_OR_95CI = paste0(OR, " (", OR_l95, "-", OR_u95, ")"),
+                         GPS_only_P = p)]
+  
+  # GWAS-rank only
+  gwas_only <- logistic[model == "GWAS only",
+                        .(GWAS_rank_OR_95CI = paste0(OR, " (", OR_l95, "-", OR_u95, ")"),
+                          GWAS_rank_P = p)]
+  
+  # adjusted GPS effect
+  gps_adj <- logistic[
+    (model == "GWAS + agingGPS-N" & term == "agingGPS-N") |
+      (model == "GWAS + agingGPS-M" & term == "agingGPS-M"),
+    .(GPS = term,
+      Adjusted_GPS_OR_95CI = paste0(OR, " (", OR_l95, "-", OR_u95, ")"),
+      Adjusted_GPS_P = p,
+      n = n)
+  ]
+  
+  # adjusted GWAS-rank effect
+  gwas_adj <- logistic[
+    (model == "GWAS + agingGPS-N" & term == "agingGWAS-rank score") |
+      (model == "GWAS + agingGPS-M" & term == "agingGWAS-rank score"),
+    .(GPS = ifelse(model == "GWAS + agingGPS-N", "agingGPS-N", "agingGPS-M"),
+      Adjusted_GWAS_OR_95CI = paste0(OR, " (", OR_l95, "-", OR_u95, ")"),
+      Adjusted_GWAS_P = p)
+  ]
+  
+  # linear relationship: agingGPS ~ agingGWAS-rank score
+  linear_summary <- linear[, .(
+    GPS = ifelse(grepl("agingGPS-N", model), "agingGPS-N", "agingGPS-M"),
+    GPS_GWAS_beta = beta,
+    GPS_GWAS_P = p,
+    GPS_GWAS_R2 = r2
+  )]
+  
+  # LRT
+  lrt_summary <- lrt[, .(
+    GPS = added_term,
+    LRT_chisq = deviance,
+    LRT_df = df,
+    LRT_P = p,
+    AIC_reduced = AIC_reduced,
+    AIC_full = AIC_full
+  )]
+  
+  # combine
+  out <- Reduce(function(x, y) merge(x, y, by = "GPS", all = TRUE),
+                list(gps_only, gps_adj, gwas_adj, linear_summary, lrt_summary))
+  
+  # add GWAS-only result to both GPS rows
+  out[, top_gene_set := paste0("Top ", top)]
+  out[, GWAS_rank_OR_95CI := gwas_only$GWAS_rank_OR_95CI]
+  out[, GWAS_rank_P := gwas_only$GWAS_rank_P]
+  
+  # reorder columns
+  out <- out[, .(
+    top_gene_set,
+    GPS,
+    n,
+    GPS_only_OR_95CI,
+    GPS_only_P,
+    GWAS_rank_OR_95CI,
+    GWAS_rank_P,
+    Adjusted_GPS_OR_95CI,
+    Adjusted_GPS_P,
+    Adjusted_GWAS_OR_95CI,
+    Adjusted_GWAS_P,
+    GPS_GWAS_beta,
+    GPS_GWAS_P,
+    GPS_GWAS_R2,
+    LRT_chisq,
+    LRT_df,
+    LRT_P,
+    AIC_reduced,
+    AIC_full
+  )]
+  
+  return(out)
+}
+
+agingGPS_GWASrank_table <- list(
+  table_top100 = make_agingGPS_GWASrank_table(data = compare_dt_scale, top = 100, known_col = "ifknow_aging"),
+  table_top200 = make_agingGPS_GWASrank_table(data = compare_dt_scale, top = 200, known_col = "ifknow_aging"),
+  table_top500 = make_agingGPS_GWASrank_table(data = compare_dt_scale, top = 500, known_col = "ifknow_aging"),
+  table_top1000 = make_agingGPS_GWASrank_table(data = compare_dt_scale, top = 1000, known_col = "ifknow_aging"),
+  table_fdr = make_agingGPS_GWASrank_table(data = compare_dt_scale, top = "fdr", known_col = "ifknow_aging", gwas_prefix = "ageGWAS_count_"),
+  table_bonf = make_agingGPS_GWASrank_table(data = compare_dt_scale, top = "bonf", known_col = "ifknow_aging", gwas_prefix = "ageGWAS_count_")) %>% rbindlist()
+
+agingGPS_GWASrank_table
+
+fwrite(agingGPS_GWASrank_table, file = sprintf("%s/agingGPS_GWASrank_modelfit.csv", figure_file))
+
+
+
