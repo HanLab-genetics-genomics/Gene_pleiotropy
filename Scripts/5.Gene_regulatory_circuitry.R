@@ -143,9 +143,9 @@ percent_sgenes$pleio
 percent_sgenes$age
 
 ggsave(plot = percent_egenes$pleio, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_cisegenes_pn.pdf",figure_file))
+       filename = sprintf("%s/figure3_cisegenes_pn.pdf",figure_file))
 ggsave(plot = percent_sgenes$pleio, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_cissgenes_pn.pdf",figure_file))
+       filename = sprintf("%s/figure3_cissgenes_pn.pdf",figure_file))
 
 ###trans-eGenes----------------------------------
 trans_eqtl <- fread("eqtlgen_transeqtl.txt")
@@ -279,7 +279,7 @@ tau_percent_plot$pn
 
 
 ggsave(plot = tau_percent_plot$pn$plot, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_tau_percent_pn.pdf",figure_file))
+       filename = sprintf("%s/figure3_tau_percent_pn.pdf",figure_file))
 
 ##supplementary figure of gene expression----------------------
 express_hist <- function(id = "FTO", data = tau_merge$pn_ld, plot_title = "FTO"){
@@ -439,7 +439,7 @@ tf_sum_box$age$plot
 
 
 ggsave(plot = tf_sum_box$pleio_n$plot, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_tf_sum_pn.pdf",figure_file))
+       filename = sprintf("%s/figure3_tf_sum_pn.pdf",figure_file))
 
 
 ##enhancer (supplementary figures)----------------------
@@ -643,5 +643,5 @@ pip_box$pleio_n$plot
 pip_box$age_n$plot
 
 ggsave(plot = pip_box$pleio_n$plot, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure4_pip_pn.pdf",figure_file))
+       filename = sprintf("%s/figure3_pip_pn.pdf",figure_file))
 
