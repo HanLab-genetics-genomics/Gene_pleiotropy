@@ -1,0 +1,5 @@
+Characteristic,Total,TRUE,FALSE,Overall_P,Omnibus_effect,Low_vs_high_P,Low_vs_high_effect
+"Gene length (bp), median (IQR)",4514 (2692 - 7044),2395 (1158 - 4524),4697 (2861 - 7223),< 0.001,ε² = 0.04,< 0.001,-0.43 (-0.45 to -0.40)
+"LOEUF_class: Intolerant, n (%)","3,023 (18.2%)",54 (4.1%),"2,969 (19.5%)",< 0.001,V = 0.11,< 0.001,0.18 (0.13 to 0.23)
+"GES_class: Essentialty, n (%)",791 (4.8%),14 (1.1%),777 (5.1%),< 0.001,V = 0.05,< 0.001,0.20 (0.11 to 0.34)
+"ifspecific: Specific, n (%)","4,479 (26.5%)",598 (54.6%),"3,881 (24.6%)",< 0.001,V = 0.17,< 0.001,3.69 (3.25 to 4.19)

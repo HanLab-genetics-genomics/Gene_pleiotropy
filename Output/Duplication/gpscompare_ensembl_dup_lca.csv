@@ -1,0 +1,11 @@
+duplication_definition,score,n_dup,n_nondup,median_dup,median_nondup,p_value,p_adj_BH
+Ensembl paralogs: Homo sapiens,GPS-M,133,17830,5.74,6.16,9.81e-18,1.63e-17
+Ensembl paralogs: Homo sapiens,GPS-N,133,17830,7.50,9.39,6.61e-19,1.32e-18
+Ensembl paralogs: Primates or younger,GPS-M,746,17217,5.74,6.17,8.85e-103,2.21e-102
+Ensembl paralogs: Primates or younger,GPS-N,746,17217,7.71,9.45,7.79e-122,2.60e-121
+Ensembl paralogs: Mammalia or younger,GPS-M,1407,16556,5.82,6.19,2.07e-138,1.04e-137
+Ensembl paralogs: Mammalia or younger,GPS-N,1407,16556,7.86,9.50,1.25e-175,1.25e-174
+Ensembl paralogs: Vertebrata or older,GPS-M,12905,5058,6.17,6.13,5.90e-04,7.37e-04
+Ensembl paralogs: Vertebrata or older,GPS-N,12905,5058,9.45,9.20,1.04e-08,1.49e-08
+Ensembl paralogs: all LCA levels,GPS-M,13259,4704,6.16,6.15,9.91e-01,9.91e-01
+Ensembl paralogs: all LCA levels,GPS-N,13259,4704,9.41,9.29,6.74e-02,7.49e-02

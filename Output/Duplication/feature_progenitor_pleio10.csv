@@ -1,0 +1,61 @@
+feature,n_high,n_low,median_high_format,median_low_format,P,adjusted_P,comparison,GPS
+Gene length (bp),697,499,3182,2939,0.218,0.364,All-gene comparison,GPS-M
+CDS Length,697,499,1065,1041,0.681,0.756,All-gene comparison,GPS-M
+Exon Counts,697,499,5,5,0.078,0.156,All-gene comparison,GPS-M
+Number of SNPs (Gene),697,499,3393,2752,0.060,0.149,All-gene comparison,GPS-M
+Nonsense/Synonymous ratio,687,493,0.1,0.1,0.021,0.071,All-gene comparison,GPS-M
+Transcript count,697,499,4,3,0.971,0.971,All-gene comparison,GPS-M
+GC content,697,499,43.81,46.41,8.02e-06,8.02e-05,All-gene comparison,GPS-M
+Missense/Synonymous ratio,697,499,2.28,2.18,1.89e-04,9.46e-04,All-gene comparison,GPS-M
+LOEUF,663,471,1.28,1.27,0.528,0.661,All-gene comparison,GPS-M
+pLI,663,471,0.01,0,0.305,0.436,All-gene comparison,GPS-M
+Gene length (bp),657,578,2836,3098,0.047,0.078,All-gene comparison,GPS-N
+CDS Length,657,578,996,1116,0.001,0.003,All-gene comparison,GPS-N
+Exon Counts,657,578,5,6,3.66e-04,0.002,All-gene comparison,GPS-N
+Number of SNPs (Gene),657,578,3074,3154.5,0.196,0.217,All-gene comparison,GPS-N
+Nonsense/Synonymous ratio,648,572,0.11,0.11,0.339,0.339,All-gene comparison,GPS-N
+Transcript count,657,578,3,4,0.148,0.186,All-gene comparison,GPS-N
+GC content,657,578,44.21,46.07,0.012,0.023,All-gene comparison,GPS-N
+Missense/Synonymous ratio,657,578,2.27,2.19,9.04e-04,0.003,All-gene comparison,GPS-N
+LOEUF,621,547,1.34,1.25,5.96e-05,5.96e-04,All-gene comparison,GPS-N
+pLI,621,547,0.01,0,0.104,0.148,All-gene comparison,GPS-N
+Gene length (bp),206,181,3480,3116,0.221,0.511,Ancestral-only comparison,GPS-M
+CDS Length,206,181,1068,1053,0.505,0.780,Ancestral-only comparison,GPS-M
+Exon Counts,206,181,6,6,0.886,0.886,Ancestral-only comparison,GPS-M
+Number of SNPs (Gene),206,181,4278,3032,0.103,0.475,Ancestral-only comparison,GPS-M
+Nonsense/Synonymous ratio,201,180,0.09,0.1,0.878,0.886,Ancestral-only comparison,GPS-M
+Transcript count,206,181,4,4,0.546,0.780,Ancestral-only comparison,GPS-M
+GC content,206,181,44.36,48.1,0.038,0.377,Ancestral-only comparison,GPS-M
+Missense/Synonymous ratio,206,181,2.17,2.13,0.256,0.511,Ancestral-only comparison,GPS-M
+LOEUF,196,173,1.22,1.22,0.712,0.886,Ancestral-only comparison,GPS-M
+pLI,196,173,0.01,0,0.142,0.475,Ancestral-only comparison,GPS-M
+Gene length (bp),198,203,3480.5,3115,0.643,0.804,Ancestral-only comparison,GPS-N
+CDS Length,198,203,1047,1083,0.196,0.804,Ancestral-only comparison,GPS-N
+Exon Counts,198,203,6,6,0.466,0.804,Ancestral-only comparison,GPS-N
+Number of SNPs (Gene),198,203,3914,3295,0.824,0.824,Ancestral-only comparison,GPS-N
+Nonsense/Synonymous ratio,194,202,0.09,0.1,0.568,0.804,Ancestral-only comparison,GPS-N
+Transcript count,198,203,4.5,4,0.462,0.804,Ancestral-only comparison,GPS-N
+GC content,198,203,45.62,46.14,0.576,0.804,Ancestral-only comparison,GPS-N
+Missense/Synonymous ratio,198,203,2.13,2.13,0.428,0.804,Ancestral-only comparison,GPS-N
+LOEUF,187,195,1.22,1.23,0.780,0.824,Ancestral-only comparison,GPS-N
+pLI,187,195,0.01,0,0.043,0.434,Ancestral-only comparison,GPS-N
+Gene length (bp),491,318,3009,2865,0.402,0.670,Recent-only comparison,GPS-M
+CDS Length,491,318,1065,1035,0.991,0.991,Recent-only comparison,GPS-M
+Exon Counts,491,318,4,5,0.079,0.197,Recent-only comparison,GPS-M
+Number of SNPs (Gene),491,318,3137,2615,0.136,0.271,Recent-only comparison,GPS-M
+Nonsense/Synonymous ratio,486,313,0.11,0.1,0.009,0.029,Recent-only comparison,GPS-M
+Transcript count,491,318,3,3,0.789,0.884,Recent-only comparison,GPS-M
+GC content,491,318,43.52,46.05,1.52e-04,0.002,Recent-only comparison,GPS-M
+Missense/Synonymous ratio,491,318,2.32,2.22,6.75e-04,0.003,Recent-only comparison,GPS-M
+LOEUF,467,298,1.33,1.31,0.581,0.829,Recent-only comparison,GPS-M
+pLI,467,298,0,0,0.795,0.884,Recent-only comparison,GPS-M
+Gene length (bp),459,375,2646,3097,0.013,0.021,Recent-only comparison,GPS-N
+CDS Length,459,375,981,1125,0.002,0.006,Recent-only comparison,GPS-N
+Exon Counts,459,375,4,5,3.47e-04,0.002,Recent-only comparison,GPS-N
+Number of SNPs (Gene),459,375,2708,2989,0.139,0.174,Recent-only comparison,GPS-N
+Nonsense/Synonymous ratio,454,370,0.11,0.11,0.226,0.251,Recent-only comparison,GPS-N
+Transcript count,459,375,3,4,0.040,0.058,Recent-only comparison,GPS-N
+GC content,459,375,43.83,46.06,0.009,0.017,Recent-only comparison,GPS-N
+Missense/Synonymous ratio,459,375,2.32,2.23,0.001,0.004,Recent-only comparison,GPS-N
+LOEUF,434,352,1.4,1.25,2.07e-06,2.07e-05,Recent-only comparison,GPS-N
+pLI,434,352,0,0,0.569,0.569,Recent-only comparison,GPS-N
