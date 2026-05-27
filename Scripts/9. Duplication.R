@@ -1161,7 +1161,7 @@ table_dup_ensembl_list <- lapply(list("ens_dup_human", "ens_dup_primate", "ens_d
 names(table_dup_ensembl_list) <- c("ens_dup_human", "ens_dup_primate", "ens_dup_mammal", "ens_dup_vertebrate_older", 
                                    "ens_dup_all")
 table_dup_ensembl_list$ens_dup_human[c(1,2,4,6),]
-table_dup_ensembl_list$ens_dup_primate
+table_dup_ensembl_list$ens_dup_primate[c(1,2,4,6),]
 table_dup_ensembl_list$ens_dup_mammal
 table_dup_ensembl_list$ens_dup_vertebrate_older
 table_dup_ensembl_list$ifhsdfinder
@@ -1194,3 +1194,298 @@ table_dup <- make_supp_table(
 table_dup
 
 write.csv(table_dup, file = sprintf("%s/table_dup.csv", figure_file), row.names = FALSE)
+
+#############Duplication (paper 2026)#########################
+#1 load data----------------
+GPS_hsd_merge <- fread("GPS_hsd_merge.csv", na.strings = c("", "NA"))
+data_paper2026 <- fread("Gene_Age_DataFrame.tsv")
+head(data_paper2026)
+
+count_bioprocess <- function(x) {
+  sapply(x, function(z) {
+    if (is.null(z) || is.na(z)) return(NA_integer_)
+    
+    z <- as.character(z)
+    z <- trimws(z)
+    
+    if (z %in% c("", "[]", "NA", "NULL")) return(0L)
+    
+    # remove brackets
+    z <- gsub("^\\[|\\]$", "", z)
+    
+    # split by comma
+    items <- unlist(strsplit(z, ","))
+    items <- trimws(items)
+    items <- gsub("^['\"]|['\"]$", "", items)
+    items <- items[items != ""]
+    
+    length(unique(items))
+  })
+}
+
+data_paper2026[, n_bioprocess := count_bioprocess(Assc_BioProcesses)]
+data_paper2026[, ifhsd := fifelse(
+  is.na(Paralogs), NA_character_,
+  fifelse(Paralogs == 0, "Singletons",
+          fifelse(Paralogs > 0, "Duplicates", NA_character_))
+)]
+
+table(data_paper2026$AgeBin)
+
+data_paper2026[, AgeBin_group5 := cut(
+  as.numeric(AgeBin),
+  breaks = c(0, 1, 3, 5, 7, 9),
+  labels = c(1,2,3,4,5),
+  include.lowest = TRUE,
+  right = TRUE
+)]
+
+table(data_paper2026$AgeBin_group5)
+
+data_paper2026_merge <- merge(GPS_hsd_merge, data_paper2026, by.x = "gene", by.y = "Gene_Symbol", all = T)
+nrow(data_paper2026_merge) #22136
+length(intersect(GPS_hsd_merge$gene, data_paper2026$Gene_Symbol)) #15294
+
+#2 plot data-----------------
+plot_feature_by_age_dup <- function(data, feature_var, title_text = "H. sapiens",
+                                    age_var = "acrossAgeBin_500",
+                                    dup_var = "ifhsd",
+                                    age_order = NULL,
+                                    dup_levels = c("FALSE", "TRUE"),
+                                    dup_labels = c("Singletons", "Duplicates"),
+                                    log_transform = TRUE,
+                                    ylab = NULL,
+                                    add_p = TRUE,
+                                    test_method = "wilcox",
+                                    p_adjust_method = "BH",
+                                    p_label_type = "both") {
+  
+  library(data.table)
+  library(ggplot2)
+  
+  dt <- copy(as.data.table(data))
+  
+  
+  setnames(dt, old = names(dt), new = trimws(names(dt)))
+  age_var <- trimws(age_var)
+  dup_var <- trimws(dup_var)
+  feature_var <- trimws(feature_var)
+  
+  dt <- dt[
+    !is.na(get(age_var)) &
+      !is.na(get(dup_var)) &
+      !is.na(get(feature_var))
+  ]
+  
+  if (is.null(age_order)) {
+    age_order <- sort(unique(dt[[age_var]]))
+  }
+  
+  dt[, age_group := factor(get(age_var), levels = age_order)]
+  
+  
+  dt[, dup_group := factor(
+    as.character(get(dup_var)),
+    levels = as.character(dup_levels),
+    labels = dup_labels
+  )]
+  
+  dt <- dt[!is.na(age_group) & !is.na(dup_group)]
+  
+  dt[, y := as.numeric(get(feature_var))]
+  
+  if (log_transform) {
+    dt[, y := log1p(y)]
+  }
+  
+  if (is.null(ylab)) {
+    ylab <- if (log_transform) {
+      paste0("log(", feature_var, " + 1)")
+    } else {
+      feature_var
+    }
+  }
+  
+  
+  stat_dt <- dt[, {
+    
+    x1 <- y[dup_group == dup_labels[1]]
+    x2 <- y[dup_group == dup_labels[2]]
+    
+    if (length(x1) < 2 | length(x2) < 2) {
+      data.table(
+        n1 = length(x1),
+        n2 = length(x2),
+        p = NA_real_
+      )
+    } else {
+      
+      pval <- if (test_method == "wilcox") {
+        wilcox.test(x1, x2)$p.value
+      } else if (test_method == "t.test") {
+        t.test(x1, x2)$p.value
+      } else {
+        stop("test_method should be 'wilcox' or 't.test'")
+      }
+      
+      data.table(
+        n1 = length(x1),
+        n2 = length(x2),
+        p = pval
+      )
+    }
+    
+  }, by = age_group]
+  
+  stat_dt[, p_adj := p.adjust(p, method = p_adjust_method)]
+  
+  stat_dt[, p_adj_label := ifelse(
+    is.na(p_adj), "NA",
+    ifelse(p_adj < 0.001, sprintf("%.2e", p_adj), sprintf("%.3f", p_adj))
+  )]
+  
+  stat_dt[, signif_label := fifelse(
+    is.na(p_adj), "NA",
+    fifelse(p_adj < 0.001, "***",
+            fifelse(p_adj < 0.01, "**",
+                    fifelse(p_adj < 0.05, "*", "ns")))
+  )]
+  
+  stat_dt[, label := p_adj_label]
+  
+  
+  y_range <- range(dt$y, na.rm = TRUE)
+  y_offset <- diff(y_range) * 0.08
+  
+  ypos_dt <- dt[, .(
+    y_pos = max(y, na.rm = TRUE) + y_offset
+  ), by = age_group]
+  
+  stat_dt <- merge(stat_dt, ypos_dt, by = "age_group", all.x = TRUE)
+  
+  
+  p <- ggplot(
+    dt,
+    aes(x = age_group, y = y, fill = dup_group, group = interaction(age_group, dup_group))
+  ) +
+    geom_violin(
+      position = position_dodge(width = 0.8),
+      width = 0.85,
+      alpha = 0.45,
+      color = NA,
+      trim = TRUE
+    ) +
+    geom_boxplot(
+      position = position_dodge(width = 0.8),
+      width = 0.18,
+      outlier.shape = NA,
+      fill = "white",
+      color = "black",
+      linewidth = 0.5
+    ) +
+    stat_summary(
+      aes(group = dup_group, color = dup_group),
+      fun = median,
+      geom = "line",
+      position = position_dodge(width = 0.8),
+      linewidth = 0.8
+    ) +
+    stat_summary(
+      aes(group = dup_group, color = dup_group),
+      fun = median,
+      geom = "point",
+      position = position_dodge(width = 0.8),
+      size = 1.6
+    ) +
+    scale_fill_manual(
+      values = setNames(c("#8EC1E8", "#F2C38B"), dup_labels)
+    ) +
+    scale_color_manual(
+      values = setNames(c("#4C72B0", "#E49B39"), dup_labels)
+    ) +
+    labs(x = "", y = ylab) +
+    scale_x_discrete(
+      breaks = c(levels(dt$age_group)[1], levels(dt$age_group)[length(levels(dt$age_group))]),
+      labels = c("Oldest", "Youngest")
+    ) +
+    scale_y_continuous(
+      expand = expansion(mult = c(0.03, 0.18))
+    ) +
+    theme_bw() +
+    theme(
+      panel.grid = element_blank(),
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
+      axis.title = element_text(size = 13),
+      legend.title = element_blank(),
+      legend.position = "top",
+      plot.title = element_text(hjust = 0.5, face = "italic", size = 15)
+    ) +
+    ggtitle(title_text)
+  
+  if (add_p) {
+    p <- p +
+      geom_text(
+        data = stat_dt,
+        aes(x = age_group, y = y_pos, label = label),
+        inherit.aes = FALSE,
+        size = 4,
+        lineheight = 0.85
+      )
+  }
+  
+ 
+  attr(p, "stat_test") <- stat_dt
+  
+  return(p)
+}
+
+##group5---------------
+plot_paper_list5 <- list(
+  paper = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "n_bioprocess", title_text = "Martin and Tate 2025",
+                                  dup_levels = c("Singletons", "Duplicates"), dup_labels = c("Singletons", "Duplicates"),
+                                  age_var = "AgeBin_group5", dup_var = "ifhsd", log_transform = TRUE, ylab = "log(Biological Process Count)"),
+  human = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "n_bioprocess", title_text = "human-lineage duplication",
+                                  age_var = "AgeBin_group5", dup_var = "ens_dup_human", log_transform = TRUE, ylab = "log(Biological Process Count)"),
+  primate = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "n_bioprocess", title_text = "primate-or-younger duplication",
+                                    age_var = "AgeBin_group5", dup_var = "ens_dup_primate", log_transform = TRUE, ylab = "log(Biological Process Count)"),
+  mammal = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "n_bioprocess", title_text = "mammalian-or-younger duplication",
+                                   age_var = "AgeBin_group5", dup_var = "ens_dup_mammal", log_transform = TRUE, ylab = "log(Biological Process Count)"),
+  vertebrate = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "n_bioprocess", title_text = "vertebrate-lineage-or-older duplication",
+                                       age_var = "AgeBin_group5", dup_var = "ens_dup_vertebrate_older", log_transform = TRUE, ylab = "log(Biological Process Count)"))
+
+plot_paper_list5$paper
+plot_paper_list5$mammal
+plot_paper_list5$primate
+plot_paper_list5$vertebrate
+
+
+plot_pn5 <- list(
+  paper = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "pn_ld", title_text = "Martin and Tate 2025",
+                                  dup_levels = c("Singletons", "Duplicates"), dup_labels = c("Singletons", "Duplicates"),
+                                  age_var = "AgeBin_group5", dup_var = "ifhsd", log_transform = F, ylab = "GPS-N"),
+  human = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "pn_ld", title_text = "human-lineage duplication",
+                                  age_var = "AgeBin_group5", dup_var = "ens_dup_human", log_transform = F, ylab = "GPS-N"),
+  primate = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "pn_ld", title_text = "primate-or-younger duplication",
+                                    age_var = "AgeBin_group5", dup_var = "ens_dup_primate", log_transform = F, ylab = "GPS-N"),
+  mammal = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "pn_ld", title_text = "mammalian-or-younger duplication",
+                                   age_var = "AgeBin_group5", dup_var = "ens_dup_mammal", log_transform = F, ylab = "GPS-N"),
+  vertebrate = plot_feature_by_age_dup(data = data_paper2026_merge, feature_var = "pn_ld", title_text = "vertebrate-lineage-or-older duplication",
+                                       age_var = "AgeBin_group5", dup_var = "ens_dup_vertebrate_older", log_transform = F, ylab = "GPS-N"))
+
+plot_pn5$mammal
+plot_pn5$paper
+plot_pn5$vertebrate
+plot_pn5$primate
+
+
+for(i in names(plot_paper_list5)){
+  ggsave(plot = plot_paper_list5[[i]], width = 5, height = 4, device = cairo_pdf,
+         filename = sprintf("%s/Duplication/group5_paper2026_%s.pdf", figure_file, i))
+}
+
+for(i in names(plot_pn5)){
+  ggsave(plot = plot_pn5[[i]], width = 5, height = 4, device = cairo_pdf,
+         filename = sprintf("%s/Duplication/group5_pn_%s.pdf", figure_file, i))
+}
+
