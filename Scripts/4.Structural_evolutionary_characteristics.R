@@ -1,6 +1,6 @@
 #1 load packages and set variables-------
 setwd("/path/to/Gene_pleiotropy-main/Data")
-figure_file <- "/path/to/Gene_pleiotropy-main/Output/Figure3"
+figure_file <- "/path/to/Gene_pleiotropy-main/Output/Structural_evolutionary_characteristics"
 if (!dir.exists(figure_file)) {
   dir.create(figure_file, recursive = TRUE)
 }
@@ -312,8 +312,46 @@ ggsave(plot = pn_constrait_percent_list$lof_tolerant$plot, width = 3.2, height =
        filename = sprintf("%s/figure3_lof_tolerant_pn.pdf",figure_file))
 
 ####essential genes--------------
+group_conpercent_func_gse <- function(data = hopsgene_ageburden_cut_genemetrics$pn_ld, x_label = "", ifscale = T,
+                                  y_label = "Percents of intolerant genes classified by LOEUF (%)",
+                                  group = "pleio_class3", x_var = "LOEUF_class",
+                                  x_text = c("Low", "Intermediate", "High"),
+                                  color_value,
+                                  feature_name = "Intolerant",
+                                  stat_test = test, test_list = c("Low pleiotropy", "High pleiotropy")){
+  
+  freq_data <- table(data[,get(x_var)], data[, get(group)]) %>%
+    prop.table(., margin = 2) %>%
+    as.data.table(.) %>%
+    setnames(., names(.), c("feature", "pleio", "freq")) %>%
+    .[feature == feature_name, list(pleio, freq = freq*100,freq_name = sprintf("%.2f", freq*100))]
+  
+  freq_data$pleio <- factor(freq_data$pleio, levels = freq_data$pleio)
+  
+  plot <- ggplot(data = freq_data) + theme_bw() +
+    geom_bar(aes(x = pleio, y = freq, fill = pleio), stat = "identity", width = 0.9) +
+    scale_fill_manual(values = color_value) +
+    geom_signif(aes(x = pleio, y = freq),
+                comparisons = list(test_list), color = "grey20",
+                #map_signif_level = TRUE,
+                annotations = stat_test[[x_var]]) +
+    geom_text(aes(x = pleio, y = freq, label = freq_name), vjust = 1.5, color = "grey30", fontface = "bold", size = 6) +
+    labs(y = y_label, title = " ", x = x_label) +
+    theme(text = element_text(size = 12, color = "black", face = "bold"),
+          axis.title = element_text(size = 15, face = "bold"),
+          axis.text = element_text(size = 12, color = "black", face = "bold"),
+          axis.ticks = element_blank(), axis.line = element_line(colour = "grey50"),
+          panel.grid = element_blank(), panel.grid.minor = element_blank(),
+          legend.position = "none",
+          panel.border = element_blank(),
+          panel.grid.major = element_blank())+
+    scale_x_discrete(labels = x_text)
+  
+  return(list(plot_data = freq_data, plot = plot))
+}
+
 usedata <- pleiotropy_maindata$pn_ld
-chronos_data <- fread("/home/liumy/pleiotropy/data/essentiality/CRISPRGeneEffect.csv")
+chronos_data <- fread("CRISPRGeneEffect/CRISPRGeneEffect.csv")
 chronos_essential <- data.table(gene = names(chronos_data)[-1],
                                 essential_score = colMeans(chronos_data[,-1], na.rm = TRUE)) %>%
   separate(gene, into = c("gene", "id"), sep = " ") %>% .[,-2] %>%
@@ -325,7 +363,7 @@ head(chronos_essential)
 usedata <- merge(pleiotropy_maindata$pn_ld, chronos_essential[, .(gene, essential_score)], by = "gene", all.x = T) %>%
   .[, GES := -essential_score] %>%
   .[, GES_class := case_when(is.na(essential_score)   ~ NA_character_,
-                             essential_score <= -1   ~ "Essenctial",
+                             essential_score <= -1   ~ "Essential",
                              TRUE               ~ "Non_essential")] 
 
 head(usedata)
@@ -334,17 +372,17 @@ head(usedata)
 GES_count <- table(usedata[, .(pleio_class3, GES_class)])
 GES_count
 
-test <- list(GES_class = pairwise.prop.test(GES_count[,"Essenctial"],
+test <- list(GES_class = pairwise.prop.test(GES_count[,"Essential"],
                                             c(sum(GES_count["Low pleiotropy", ]), sum(GES_count["Intermediate pleiotropy",]), sum(GES_count["High pleiotropy",])),
                                             p.adjust.method = "fdr")$p.value[2,1] %>% sprintf("%.2e", .))
 
 test
 
-pn_GES <- group_conpercent_func(data = usedata,
+pn_GES <- group_conpercent_func_gse(data = usedata,
                                 group = "pleio_class3", x_var = "GES_class",
                                 x_text = c("Low", "Intermediate", "High"),
                                 y_label = "Proportion of essential genes (%)",
-                                feature_name = "Essenctial",
+                                feature_name = "Essential",
                                 color_value = pleio_color)
 
 pn_GES
@@ -352,6 +390,33 @@ pn_GES
 
 ggsave(plot = pn_GES$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure2_pn_GES.pdf",figure_file))
+
+
+###proportion of essential genes between duplicates and singletons
+GES_count <- table(usedata[, .(ifhsd2, GES_class)])
+GES_count
+
+test <- list(GES_class = pairwise.prop.test(GES_count[,"Essenctial"],
+                                            c(sum(GES_count["Singletons", ]), sum(GES_count["Duplicates",])),
+                                            p.adjust.method = "fdr")$p.value[1,1] %>% sprintf("%.2e", .))
+
+test
+
+hsd_GES <- group_conpercent_func_gse(data = usedata,
+                                 group = "ifhsd2", x_var = "GES_class",
+                                 x_text = c("Singletons", "Duplicates"),
+                                 y_label = "Proportion of essential genes (%)",
+                                 feature_name = "Essential",
+                                 stat_test = test, test_list = c("Singletons", "Duplicates"),
+                                 color_value = c("#66C2A5", "#FC8D62"))
+
+hsd_GES
+
+
+ggsave(plot = hsd_GES$plot, width = 3.2, height = 5, device = cairo_pdf,
+       filename = sprintf("%s/figure2_hsd_GES.pdf",figure_file))
+
+
 
 ##duplicated genes--------------------
 ###percent of duplicated genes-----------------
@@ -542,6 +607,80 @@ ggsave(plot = hsd_box$pleio_pn$plot, width = 3.2, height = 5, device = cairo_pdf
        filename = sprintf("%s/figure3_hsd_pleio_pn.pdf",figure_file))
 
 ###gene length-------------
+hsd_box_func2 <- function(data = pleiotropy_maindata$pn_ld, x_label = "", scale_y = F,
+                         y_label = "Gene length (bp)" , group = "pleio_class3", x_var = "Gene length (bp)",
+                         x_text = c("Low", "Intermediate", "High"), color_value = pleio_color,
+                         stat_test = test, test_list = c("Low pleiotropy", "High pleiotropy"), stat_name){
+  
+  plot_data <- data[, .(mean = sapply(.SD, function(x) as.numeric(mean(x, na.rm = TRUE)))), by = group, .SDcols = x_var, with = T]
+  
+  if(scale_y == F){
+    plot <- ggplot() + theme_bw() +
+      stat_boxplot(data = data, aes(x = !!sym(group), y = !!sym(x_var)), geom ='errorbar', width = 0.2) +
+      #geom_jitter(data = data, aes(x = !!sym(group), y = !!sym(x_var), fill = !!sym(group),
+      #                color = !!sym(group)), width = 0.4, size = 0.2, alpha = 0.2) +
+      geom_boxplot(data = data, aes(x = !!sym(group), y = !!sym(x_var), fill = !!sym(group)),
+                   color="grey50", lwd = 0.6, outlier.alpha = 0.3) +
+      geom_signif(data = data, aes(x = !!sym(group), y = !!sym(x_var)),
+                  comparisons = list(test_list), color = "grey20",
+                  map_signif_level = TRUE,
+                  annotations = stat_test[[stat_name]]) +
+      geom_point(data = plot_data, aes(x = !!sym(group), y = mean), color = "grey20", size = 2.5) +
+      geom_line(data = plot_data, aes(x = !!sym(group), y = mean, group = 1),
+                linetype = "dashed", color = "grey20") +
+      #scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+      #              labels = trans_format("log10", math_format(10^.x))) +
+      scale_color_manual(values = color_value) +
+      scale_fill_manual(values = color_value) +
+      labs(x=x_label, y= y_label) +
+      theme(text = element_text(size = 12, color = "black", face = "bold"),
+            legend.position = "none",
+            axis.title.y = element_text(size = 15, face = "bold"),
+            axis.title.x = element_text(size = 15, face = "bold"),
+            axis.text = element_text(size = 12, color = "black", face = "bold"),
+            axis.ticks = element_blank(), axis.line = element_line(colour = "grey50"),
+            axis.line.y.right = element_blank(),
+            axis.text.y.right = element_blank(),
+            panel.grid = element_blank(), panel.grid.minor = element_blank(),
+            panel.border = element_blank(),
+            panel.grid.major = element_blank()) +
+      scale_x_discrete(labels = x_text)
+  } else {
+    plot <- ggplot() + theme_bw() +
+      stat_boxplot(data = data, aes(x = !!sym(group), y = !!sym(x_var)), geom ='errorbar', width = 0.2) +
+      #geom_jitter(data = data, aes(x = !!sym(group), y = !!sym(x_var), fill = !!sym(group),
+      #                color = !!sym(group)), width = 0.4, size = 0.2, alpha = 0.2) +
+      geom_boxplot(data = data, aes(x = !!sym(group), y = !!sym(x_var), fill = !!sym(group)),
+                   color="grey50", lwd = 0.6, outlier.alpha = 0.3) +
+      geom_signif(data = data, aes(x = !!sym(group), y = !!sym(x_var)),
+                  comparisons = list(test_list), color = "grey20",
+                  map_signif_level = TRUE,
+                  annotations = stat_test[[stat_name]]) +
+      geom_point(data = plot_data, aes(x = !!sym(group), y = mean), color = "grey20", size = 2.5) +
+      geom_line(data = plot_data, aes(x = !!sym(group), y = mean, group = 1),
+                linetype = "dashed", color = "grey20") +
+      geom_point(data = plot_data, aes(x = !!sym(group), y = mean), color = "grey20", size = 2.5) +
+      geom_line(data = plot_data, aes(x = !!sym(group), y = mean, group = 1), linetype = "dashed", color = "grey20") +
+      scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                    labels = trans_format("log10", math_format(10^.x))) +
+      scale_color_manual(values = color_value) +
+      scale_fill_manual(values = color_value) +
+      labs(x=x_label, y= y_label) +
+      theme(text = element_text(size = 12, color = "black", face = "bold"),
+            legend.position = "none",
+            axis.title.y = element_text(size = 15, face = "bold"),
+            axis.title.x = element_text(size = 15, face = "bold"),
+            axis.line.y.right = element_blank(),
+            axis.text.y.right = element_blank(),
+            axis.text = element_text(size = 12, color = "black", face = "bold"),
+            axis.ticks = element_blank(), axis.line = element_line(colour = "grey50"),
+            panel.grid = element_blank(), panel.grid.minor = element_blank(),
+            panel.border = element_blank(),
+            panel.grid.major = element_blank()) +
+      scale_x_discrete(labels = x_text)}
+  
+  return(list(plot_data = plot_data, plot = plot))
+}
 test <- list(
   gene_length = pairwise.wilcox.test(pleiotropy_maindata$pn_ld$`Gene length (bp)`,
                                      pleiotropy_maindata$pn_ld$ifhsd2,
@@ -549,7 +688,7 @@ test <- list(
 )
 test
 
-gene_length <- hsd_box_func(data = pleiotropy_maindata$pn_ld[, ifhsd2 := factor(ifhsd2, levels = c("Singletons", "Duplicates"))],
+gene_length <- hsd_box_func2(data = pleiotropy_maindata$pn_ld[, ifhsd2 := factor(ifhsd2, levels = c("Singletons", "Duplicates"))],
                             color_value = mycolor, scale_y = T,
                             y_label = "Gene length (bp)", x_var = "Gene length (bp)", group = "ifhsd2",
                             x_text = c("Singletons", "Duplicates"),
@@ -622,49 +761,6 @@ hsd_lof_tolerant
 
 ggsave(plot = hsd_lof_tolerant$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure2_hsd_lof_tolerant.pdf",figure_file))
-
-###proportion of essential genes-------------
-usedata <- pleiotropy_maindata$pn_ld
-chronos_data <- fread("/home/liumy/pleiotropy/data/essentiality/CRISPRGeneEffect.csv")
-chronos_essential <- data.table(gene = names(chronos_data)[-1],
-                                essential_score = colMeans(chronos_data[,-1], na.rm = TRUE)) %>%
-  separate(gene, into = c("gene", "id"), sep = " ") %>% .[,-2] %>%
-  mutate(., essential_num = apply(chronos_data[,-1], 2, function(x){sum(x < -1)})) %>%
-  mutate(., essential_chronos = ifelse(essential_num >= 1, 1, 2))
-setDT(chronos_essential)
-head(chronos_essential)
-
-usedata <- merge(pleiotropy_maindata$pn_ld, chronos_essential[, .(gene, essential_score)], by = "gene", all.x = T) %>%
-  .[, GES := -essential_score] %>%
-  .[, GES_class := case_when(is.na(essential_score)   ~ NA_character_,
-                             essential_score <= -1   ~ "Essenctial",
-                             #essential_score <= -0.5 ~ "dependency",
-                             TRUE               ~ "Non_essential")] 
-
-head(usedata)
-
-GES_count <- table(usedata[, .(ifhsd2, GES_class)])
-GES_count
-
-test <- list(GES_class = pairwise.prop.test(GES_count[,"Essenctial"],
-                                            c(sum(GES_count["Singletons", ]), sum(GES_count["Duplicates",])),
-                                            p.adjust.method = "fdr")$p.value[1,1] %>% sprintf("%.2e", .))
-
-test
-
-hsd_GES <- group_conpercent_func(data = usedata,
-                                 group = "ifhsd2", x_var = "GES_class",
-                                 x_text = c("Singletons", "Duplicates"),
-                                 y_label = "Proportion of essential genes (%)",
-                                 feature_name = "Essenctial",
-                                 stat_test = test, test_list = c("Singletons", "Duplicates"),
-                                 color_value = c("#66C2A5", "#FC8D62"))
-
-hsd_GES
-
-
-ggsave(plot = hsd_GES$plot, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure2_hsd_GES.pdf",figure_file))
 
 
 ##supplementary figures-----------------------
