@@ -1,6 +1,6 @@
 #1 load packages and set variables-------
 setwd("/path/to/Gene_pleiotropy-main/Data")
-figure_file <- "/path/to/Gene_pleiotropy-main/Output/Figure5"
+figure_file <- "/path/to/Gene_pleiotropy-main/Output/Epigenomic_modifications"
 bed_file <- "bed_data"
 lola_out_file <- "lola"
 
@@ -25,7 +25,7 @@ options(warn = -1)
 load("pleiotropy_maindata.RData")
 #3 figures--------------------
 ##enrichment by lola----------------- 
-###Extract gene coordinates ± 1000bp (could skip and load the data provided)-------------------
+###Extract gene coordinates ± 1000bp (slow - could skip and load the data provided)-------------------
 genecoordinate_func <- function(x, data = pleiotropy_maindata$pm_ld, 
                                 var_name = "pleio100", out_name = "pm", ifidentical = F,
                                 bedfile = bed_file){
@@ -66,7 +66,7 @@ for(i in c(20)){
   pm_bed[[top_bed_name]] <- genecoordinate_func(x = 101-i, var_name =  "pleio100", bedfile = bed_file,
                                                 data = pleiotropy_maindata$pm_ld, out_name = top_bed_name)
   print(paste0(top_bed_name, " is over"))
-         
+  
   bottom_bed_name = paste0("pm_bottom", i, "_hg38")
   pm_bed[[bottom_bed_name]] <- genecoordinate_func(x = i, var_name =  "pleio100", 
                                                    data = pleiotropy_maindata$pm_ld, out_name = bottom_bed_name)
@@ -79,7 +79,7 @@ for(i in c(20)){
   pn_bed[[top_bed_name]] <- genecoordinate_func(x = 101-i, var_name =  "pleio100", 
                                                 data = pleiotropy_maindata$pn_ld, out_name = top_bed_name)
   print(paste0(top_bed_name, " is over"))
-         
+  
   bottom_bed_name = paste0("pn_bottom", i, "_hg38")
   pn_bed[[bottom_bed_name]] <- genecoordinate_func(x = i, var_name =  "pleio100", 
                                                    data = pleiotropy_maindata$pn_ld, out_name = bottom_bed_name)
@@ -102,7 +102,7 @@ for(i in c(10, 20, 30, 40 ,50)){
   pm_bed[[top_bed_name]] <- genecoordinate_func(x = 101-i, var_name =  "pleio100", 
                                                 data = pleiotropy_maindata$pm_ld, out_name = top_bed_name)
   print(paste0(top_bed_name, " is over"))
-
+  
   bottom_bed_name = paste0("pm_bottom", i, "_hg19")
   pm_bed[[bottom_bed_name]] <- genecoordinate_func(x = i, var_name =  "pleio100", 
                                                    data = pleiotropy_maindata$pm_ld, out_name = bottom_bed_name)
@@ -115,7 +115,7 @@ for(i in c(10, 20, 30, 40 ,50)){
   pn_bed[[top_bed_name]] <- genecoordinate_func(x = 101-i, var_name =  "pleio100", 
                                                 data = pleiotropy_maindata$pn_ld, out_name = top_bed_name)
   print(paste0(top_bed_name, " is over"))
-         
+  
   bottom_bed_name = paste0("pn_bottom", i, "_hg19")
   pn_bed[[bottom_bed_name]] <- genecoordinate_func(x = i, var_name =  "pleio100", 
                                                    data = pleiotropy_maindata$pn_ld, out_name = bottom_bed_name)
@@ -266,7 +266,7 @@ lola_enrichment <- list(
   
 )
 
-####figure5C: plot heatmap for subcompartment--------------------------
+####figures: plot heatmap for subcompartment--------------------------
 lola_subcompartment_results <- list(
   pn = fread(sprintf("%s/pn_topbottom20_3d/col_subcompartment.tsv", lola_out_file)) %>%
     .[, Class := ifelse(userSet == 1, "Bottom 20% GPS-N genes", "Top 20% GPS-N genes")] %>% .[, c(24,3:15,18,21:23)],
