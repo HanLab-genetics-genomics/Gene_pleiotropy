@@ -19,8 +19,8 @@ options(warn = -1)
 
 #2 load data--------------------------
 load("pleiotropy_maindata.RData")
-#3 figure 1-----------------------
-##figure1B--------------
+#3 figures-----------------------
+## GPS distribution--------------
 median(pleiotropy_maindata$pn_ld$use_score) %>% sprintf("%.2f", .) #9.38
 median(pleiotropy_maindata$pm_ld$use_score) %>% sprintf("%.2f", .) #6.16
 
