@@ -311,7 +311,50 @@ pn_constrait_percent_list$lof_tolerant$plot
 ggsave(plot = pn_constrait_percent_list$lof_tolerant$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure3_lof_tolerant_pn.pdf",figure_file))
 
+####essential genes--------------
+usedata <- pleiotropy_maindata$pn_ld
+chronos_data <- fread("/home/liumy/pleiotropy/data/essentiality/CRISPRGeneEffect.csv")
+chronos_essential <- data.table(gene = names(chronos_data)[-1],
+                                essential_score = colMeans(chronos_data[,-1], na.rm = TRUE)) %>%
+  separate(gene, into = c("gene", "id"), sep = " ") %>% .[,-2] %>%
+  mutate(., essential_num = apply(chronos_data[,-1], 2, function(x){sum(x < -1)})) %>%
+  mutate(., essential_chronos = ifelse(essential_num >= 1, 1, 2))
+setDT(chronos_essential)
+head(chronos_essential)
+
+usedata <- merge(pleiotropy_maindata$pn_ld, chronos_essential[, .(gene, essential_score)], by = "gene", all.x = T) %>%
+  .[, GES := -essential_score] %>%
+  .[, GES_class := case_when(is.na(essential_score)   ~ NA_character_,
+                             essential_score <= -1   ~ "Essenctial",
+                             TRUE               ~ "Non_essential")] 
+
+head(usedata)
+
+###proportion of essential genes across GPS-N
+GES_count <- table(usedata[, .(pleio_class3, GES_class)])
+GES_count
+
+test <- list(GES_class = pairwise.prop.test(GES_count[,"Essenctial"],
+                                            c(sum(GES_count["Low pleiotropy", ]), sum(GES_count["Intermediate pleiotropy",]), sum(GES_count["High pleiotropy",])),
+                                            p.adjust.method = "fdr")$p.value[2,1] %>% sprintf("%.2e", .))
+
+test
+
+pn_GES <- group_conpercent_func(data = usedata,
+                                group = "pleio_class3", x_var = "GES_class",
+                                x_text = c("Low", "Intermediate", "High"),
+                                y_label = "Proportion of essential genes (%)",
+                                feature_name = "Essenctial",
+                                color_value = pleio_color)
+
+pn_GES
+
+
+ggsave(plot = pn_GES$plot, width = 3.2, height = 5, device = cairo_pdf,
+       filename = sprintf("%s/figure2_pn_GES.pdf",figure_file))
+
 ##duplicated genes--------------------
+###percent of duplicated genes-----------------
 percent_plot <- function(data = egenes_prop[1:3,49], 
                          group = factor(c("Low", "Intermediate", "High"), levels = c("Low", "Intermediate", "High")),
                          color_values = pleio_color, x_label = "", x_text = c("Low", "Intermediate", "High"),
@@ -385,7 +428,23 @@ ggsave(plot = percent_duplicatedgenes$pleio_pn, width = 3.2, height = 5, device 
 ggsave(plot = percent_duplicatedgenes$age, width = 4.8, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure3_duplicatedgenes_age.pdf",figure_file))
 
-##hsd_pleio_pn-----------------------
+###p for trend across pleio and age groups-----------------
+library(rstatix)
+xtab <- as.table(rbind(
+  c(table(pleiotropy_maindata$pn_ld[, .(pleio_class3, ifhsd2)])[,"Duplicates"]),
+  c(table(pleiotropy_maindata$pn_ld[, .(pleio_class3)]))
+))
+xtab
+prop_trend_test(xtab)$p %>% sprintf("%.2e", .) #"1.22e-89"
+
+xtab <- as.table(rbind(
+  c(table(pleiotropy_maindata$pn_ld[, .(age_stage4, ifhsd2)])[,"Duplicates"]),
+  c(table(pleiotropy_maindata$pn_ld[, .(age_stage4)]))
+))
+xtab
+prop_trend_test(xtab)$p %>% sprintf("%.2e", .) #"0.00e+00"
+
+###hsd_pleio_pn-----------------------
 hsd_box_func <- function(data = pleiotropy_maindata$pn_ld, x_label = "", scale_y = F,
                          y_label = "Gene length (bp)" , group = "pleio_class3", x_var = "Gene length (bp)",
                          x_text = c("Low", "Intermediate", "High"), color_value = pleio_color,
@@ -481,6 +540,132 @@ hsd_box$pleio_pn$plot
 
 ggsave(plot = hsd_box$pleio_pn$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure3_hsd_pleio_pn.pdf",figure_file))
+
+###gene length-------------
+test <- list(
+  gene_length = pairwise.wilcox.test(pleiotropy_maindata$pn_ld$`Gene length (bp)`,
+                                     pleiotropy_maindata$pn_ld$ifhsd2,
+                                     p.adjust.method = "fdr")$p.value %>% sprintf("%.2e", .)
+)
+test
+
+gene_length <- hsd_box_func(data = pleiotropy_maindata$pn_ld[, ifhsd2 := factor(ifhsd2, levels = c("Singletons", "Duplicates"))],
+                            color_value = mycolor, scale_y = T,
+                            y_label = "Gene length (bp)", x_var = "Gene length (bp)", group = "ifhsd2",
+                            x_text = c("Singletons", "Duplicates"),
+                            stat_name = "gene_length", test_list = c("Singletons", "Duplicates"))
+gene_length
+
+ggsave(plot = gene_length$plot, width = 3.2, height = 5, device = cairo_pdf,
+       filename = sprintf("%s/figure2_hsd_gene_length.pdf",figure_file))
+
+pleiotropy_maindata$pn_ld[, median(`Gene length (bp)`, na.rm = T), by = ifhsd2]
+
+
+###proportion of loss-of-function intolerant genes-------------
+group_conpercent_func <- function(data = hopsgene_ageburden_cut_genemetrics$pn_ld, x_label = "", ifscale = T,
+                                  y_label = "Percents of intolerant genes classified by LOEUF (%)",
+                                  group = "pleio_class3", x_var = "LOEUF_class",
+                                  x_text = c("Low", "Intermediate", "High"),
+                                  color_value,
+                                  feature_name = "Intolerant",
+                                  stat_test = test, test_list = c("Low pleiotropy", "High pleiotropy")){
+  
+  freq_data <- table(data[,get(x_var)], data[, get(group)]) %>%
+    prop.table(., margin = 2) %>%
+    as.data.table(.) %>%
+    setnames(., names(.), c("feature", "pleio", "freq")) %>%
+    .[feature == feature_name, list(pleio, freq = freq*100,freq_name = sprintf("%.2f", freq*100))]
+  
+  freq_data$pleio <- factor(freq_data$pleio, levels = freq_data$pleio)
+  
+  plot <- ggplot(data = freq_data) + theme_bw() +
+    geom_bar(aes(x = pleio, y = freq, fill = pleio), stat = "identity", width = 0.9) +
+    scale_fill_manual(values = color_value) +
+    geom_signif(aes(x = pleio, y = freq),
+                comparisons = list(test_list), color = "grey20",
+                #map_signif_level = TRUE,
+                annotations = stat_test[[x_var]]) +
+    geom_text(aes(x = pleio, y = freq, label = freq_name), vjust = 1.5, color = "grey30", fontface = "bold", size = 6) +
+    labs(y = y_label, title = " ", x = x_label) +
+    theme(text = element_text(size = 12, color = "black", face = "bold"),
+          axis.title = element_text(size = 15, face = "bold"),
+          axis.text = element_text(size = 12, color = "black", face = "bold"),
+          axis.ticks = element_blank(), axis.line = element_line(colour = "grey50"),
+          panel.grid = element_blank(), panel.grid.minor = element_blank(),
+          legend.position = "none",
+          panel.border = element_blank(),
+          panel.grid.major = element_blank())+
+    scale_x_discrete(labels = x_text)
+  
+  return(list(plot_data = freq_data, plot = plot))
+}
+
+
+usedata <- pleiotropy_maindata$pn_ld
+loeuf_count <- table(usedata[, .(ifhsd2, LOEUF_class)])
+test <- list(LOEUF_class = pairwise.prop.test(loeuf_count[,"Intolerant"],
+                                              c(sum(loeuf_count["Singletons", ]), sum(loeuf_count["Duplicates",])),
+                                              p.adjust.method = "fdr")$p.value[1,1] %>% sprintf("%.2e", .))
+
+test
+
+hsd_lof_tolerant <- group_conpercent_func(data = usedata,
+                                          group = "ifhsd2", x_var = "LOEUF_class",
+                                          x_text = c("Singletons", "Duplicates"),
+                                          y_label = "Proportion of intolerant genes\ndefined by LOEUF (%)",
+                                          stat_test = test, test_list = c("Singletons", "Duplicates"),
+                                          color_value = c("#66C2A5", "#FC8D62"))
+
+hsd_lof_tolerant
+
+
+ggsave(plot = hsd_lof_tolerant$plot, width = 3.2, height = 5, device = cairo_pdf,
+       filename = sprintf("%s/figure2_hsd_lof_tolerant.pdf",figure_file))
+
+###proportion of essential genes-------------
+usedata <- pleiotropy_maindata$pn_ld
+chronos_data <- fread("/home/liumy/pleiotropy/data/essentiality/CRISPRGeneEffect.csv")
+chronos_essential <- data.table(gene = names(chronos_data)[-1],
+                                essential_score = colMeans(chronos_data[,-1], na.rm = TRUE)) %>%
+  separate(gene, into = c("gene", "id"), sep = " ") %>% .[,-2] %>%
+  mutate(., essential_num = apply(chronos_data[,-1], 2, function(x){sum(x < -1)})) %>%
+  mutate(., essential_chronos = ifelse(essential_num >= 1, 1, 2))
+setDT(chronos_essential)
+head(chronos_essential)
+
+usedata <- merge(pleiotropy_maindata$pn_ld, chronos_essential[, .(gene, essential_score)], by = "gene", all.x = T) %>%
+  .[, GES := -essential_score] %>%
+  .[, GES_class := case_when(is.na(essential_score)   ~ NA_character_,
+                             essential_score <= -1   ~ "Essenctial",
+                             #essential_score <= -0.5 ~ "dependency",
+                             TRUE               ~ "Non_essential")] 
+
+head(usedata)
+
+GES_count <- table(usedata[, .(ifhsd2, GES_class)])
+GES_count
+
+test <- list(GES_class = pairwise.prop.test(GES_count[,"Essenctial"],
+                                            c(sum(GES_count["Singletons", ]), sum(GES_count["Duplicates",])),
+                                            p.adjust.method = "fdr")$p.value[1,1] %>% sprintf("%.2e", .))
+
+test
+
+hsd_GES <- group_conpercent_func(data = usedata,
+                                 group = "ifhsd2", x_var = "GES_class",
+                                 x_text = c("Singletons", "Duplicates"),
+                                 y_label = "Proportion of essential genes (%)",
+                                 feature_name = "Essenctial",
+                                 stat_test = test, test_list = c("Singletons", "Duplicates"),
+                                 color_value = c("#66C2A5", "#FC8D62"))
+
+hsd_GES
+
+
+ggsave(plot = hsd_GES$plot, width = 3.2, height = 5, device = cairo_pdf,
+       filename = sprintf("%s/figure2_hsd_GES.pdf",figure_file))
+
 
 ##supplementary figures-----------------------
 ###manage data---------------------
@@ -749,7 +934,7 @@ forest_plot_list$forest_pm
 forest_plot_list$forest_pn
 
 
-##figure3I & supplementary figure 12A-------------------
+##mediation-------------------
 ###load data--------------
 mediation_data <- pleiotropy_maindata$pn_ld[, .(`Gene length (bp)`, `CDS Length`, `CDS/Transcript Length ratio`, `GC content`, 
                                                 `Transcript count`, `Exon Counts`, `Number of SNPs (Gene)`,
@@ -777,7 +962,7 @@ library(mediation)
 #  mediation_list[[var_name]] <- test
 #}
 
-##forest plot for supplementary figure 12A------------------
+####forest plot------------------
 load("mediation_list_pn.RData")
 library(forestploter)
 forest_data <- data.table(
@@ -831,7 +1016,7 @@ library(sem); library(lavaan);library(bruceR)
 #'
 
 #fit <- lavaan::sem(model, data = mediation_data, se="bootstrap", bootstrap = 1000, iseed = 123) 
-###plot the results-------------------------
+####plot the results-------------------------
 load("lavaan_multiple_mediation_singlesig_pn.RData")
 summary_fit <- lavaan_summary(fit, digits = 5, print = F)
 summary_fit$effect$fdr <- p.adjust(summary_fit$effect$pval, method = "fdr")
@@ -863,3 +1048,4 @@ med_plot <-  ggplot(forest_data, aes(x = factor(label, levels = label), y = prop
 med_plot
 ggsave(med_plot, width = 4, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure3_mediation_prop_sigsingel_pn.pdf",figure_file))
+
