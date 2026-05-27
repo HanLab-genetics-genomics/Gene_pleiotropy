@@ -19,7 +19,7 @@ options(warn = -1)
 
 #2 load data--------------------------
 load("pleiotropy_maindata.RData")
-#3 figure3----------------------
+#3 figures----------------------
 ##function-------------------
 group_scatter_func <- function(data = pleiotropy_maindata$pn_ld, x_label = "", ifscale = T,
                                y_label = "Gene length (bp)" , group = "pleio_class3", x_var = "Gene length (bp)",
@@ -212,7 +212,7 @@ dnds_func <- function(data = pleiotropy_maindata$pn_ld, x_label = "GPS-N bins",
   
   return(plot)
 }
-##GPS-N (figure 3A-C)-------------------------
+##GPS-N-------------------------
 usedata <-  pleiotropy_maindata$pn_ld
 ###length related metrics + GC content--------------------
 length_var <- c("Gene length (bp)", "Transcript length (bp)", "CDS Length",  "Protein size (aa)", "CDS/Transcript Length ratio",
@@ -293,8 +293,7 @@ pn_dnds_list <- list(
 
 
 pn_dnds_list$mouse
-ggsave(plot = pn_dnds_list$mouse, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure3_dnds_mouse_pn.pdf",figure_file))
+
 
 ####intolerant gene percent----------------------
 loeuf_count <- table(usedata[, .(pleio_class3, LOEUF_class)])
@@ -312,7 +311,7 @@ pn_constrait_percent_list$lof_tolerant$plot
 ggsave(plot = pn_constrait_percent_list$lof_tolerant$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure3_lof_tolerant_pn.pdf",figure_file))
 
-##figure3D&E--------------------
+##duplicated genes--------------------
 percent_plot <- function(data = egenes_prop[1:3,49], 
                          group = factor(c("Low", "Intermediate", "High"), levels = c("Low", "Intermediate", "High")),
                          color_values = pleio_color, x_label = "", x_text = c("Low", "Intermediate", "High"),
@@ -386,7 +385,7 @@ ggsave(plot = percent_duplicatedgenes$pleio_pn, width = 3.2, height = 5, device 
 ggsave(plot = percent_duplicatedgenes$age, width = 4.8, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure3_duplicatedgenes_age.pdf",figure_file))
 
-##figure3F-----------------------
+##hsd_pleio_pn-----------------------
 hsd_box_func <- function(data = pleiotropy_maindata$pn_ld, x_label = "", scale_y = F,
                          y_label = "Gene length (bp)" , group = "pleio_class3", x_var = "Gene length (bp)",
                          x_text = c("Low", "Intermediate", "High"), color_value = pleio_color,
@@ -483,7 +482,7 @@ hsd_box$pleio_pn$plot
 ggsave(plot = hsd_box$pleio_pn$plot, width = 3.2, height = 5, device = cairo_pdf,
        filename = sprintf("%s/figure3_hsd_pleio_pn.pdf",figure_file))
 
-##figure3G-----------------------
+##supplementary figures-----------------------
 ###manage data---------------------
 dup_pairs <- pleiotropy_maindata$pn_ld[!is.na(group_id), 
                                        .(N = .N, gene, age_stage7, age_stage7_mya, age_stage4,
@@ -676,10 +675,7 @@ hsd_progenitor_box <- list(pleio_pn = progenitor_box_func(data = progenitor_data
                                                           stat_name = "progenitor_pm", test_list = c("Progenitor", "Copy"))) 
 hsd_progenitor_box$pleio_pn$plot
 
-ggsave(plot = hsd_progenitor_box$pleio_pn$plot, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure3_progenitor_pleio_pn.pdf",figure_file))
 
-##figure3H-----------------------------
 ###run the random forest (long time, could skip and load the results provided)---------------
 library(randomForest)
 #forest_result <- lapply(list("pn_ld", "pm_ld"), function(x, data = pleiotropy_maindata){
@@ -751,10 +747,7 @@ forest_plot_list <- list(
 
 forest_plot_list$forest_pm
 forest_plot_list$forest_pn
-ggsave(plot = forest_plot_list$forest_pm, width = 5, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure3_forest_pm.pdf",figure_file))
-ggsave(plot = forest_plot_list$forest_pn, width = 5, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure3_forest_pn.pdf",figure_file))
+
 
 ##figure3I & supplementary figure 12A-------------------
 ###load data--------------
