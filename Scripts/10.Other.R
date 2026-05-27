@@ -1,6 +1,6 @@
 #1 load packages and set variables-------
 setwd("/path/to/Gene_pleiotropy-main/Data")
-figure_file <- "/path/to/Gene_pleiotropy-main/Output/Supple"
+figure_file <- "/path/to/Gene_pleiotropy-main/Output/Other"
 if (!dir.exists(figure_file)) {
   dir.create(figure_file, recursive = TRUE)
 }
@@ -16,88 +16,6 @@ age7_name <- c("Euteleostomi", "Tetrapoda", "Amniota", "Mammalia", "Theria", "Eu
 x_text <-  c("Euteleostomi", "Tetrapoda", "Amniota", "Eutheria")
 age_test <- c("Euteleostomi", "Eutheria")
 options(warn = -1)
-
-################enrichment of high GPS genes in pleiotropy-enriched genomic hotspots####################--------------------
-load("pleiotropy_maindata.RData")
-head(pleiotropy_maindata$pm_ld)
-
-library(biomaRt)
-mart <- useEnsembl(biomart = "ensembl", dataset = "hsapiens_gene_ensembl", mirror = "useast")
-regions <- c("6:28477797:33448354",   # broad MHC/HLA region
-             "16:29603941:30198600",  # 16p11.2 BP4-BP5
-             "22:18600000:21500000",  # 22q11.2 proximal A-D
-             "22:35100000:51304566",  # 22q13 
-             "17:43600000:44500000"   # 17q21.31 inversion region
-)
-
-genes <- getBM(attributes = c("chromosome_name", "start_position", "end_position",
-                              "strand", "hgnc_symbol", "ensembl_gene_id"),
-               filters = "chromosomal_region",
-               values = regions,  mart = mart)
-head(genes)
-
-# Clean a bit
-genes <- genes[genes$chromosome_name %in% c("6", "16", "17", "22"), ]
-genes <- unique(genes)
-head(genes)
-setDT(genes)
-
-gene_list <- list(gene_MHC = unique(na.omit(genes[chromosome_name == 6 & hgnc_symbol != "",]$hgnc_symbol)),
-                  gene_16 = unique(na.omit(genes[chromosome_name == 16 & hgnc_symbol != "",]$hgnc_symbol)),
-                  gene_17 = unique(na.omit(genes[chromosome_name == 17 & hgnc_symbol != "",]$hgnc_symbol)),
-                  gene_22 = unique(na.omit(genes[chromosome_name == 22 & hgnc_symbol != "",]$hgnc_symbol)))
-
-
-fisher_test <- function(U, A, B) {
-  
-  U <- unique(U)
-  A <- unique(intersect(A, U))
-  B <- unique(intersect(B, U))
-  
-  m <- length(A)
-  n <- length(B)
-  N <- length(U)
-  k <- length(intersect(A, B))
-  
-  a <- k
-  b <- m - k
-  c <- n - k
-  d <- N - m - n + k
-  cont <- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE,
-                 dimnames = list(A = c("inA", "notInA"), B = c("inB", "notInB")))
-  
-  
-  fisher_p <- tryCatch(
-    fisher.test(cont)$p.value,
-    error = function(e) NA_real_
-  )
-  
-  fisher_or <- tryCatch(
-    fisher.test(cont)$estimate,
-    error = function(e) NA_real_
-  )
-  
-  
-  tab <- data.table(a = a, b = b, c = c, d = d, fisher_p = sprintf("%.2e", fisher_p), fisher_or = sprintf("%.2f", fisher_or))
-  return(tab)
-}
-
-pm_high <- pleiotropy_maindata$pm_ld[pleio_class3 == "High pleiotropy"]$gene
-fisher_test_list_pm <- list(gene_MHC = fisher_test(U = pleiotropy_maindata$pm_ld$gene, A = pm_high, B = gene_list$gene_MHC),
-                            gene_16 = fisher_test(U = pleiotropy_maindata$pm_ld$gene, A = pm_high, B = gene_list$gene_16),
-                            gene_17 = fisher_test(U = pleiotropy_maindata$pm_ld$gene, A = pm_high, B = gene_list$gene_17),
-                            gene_22 = fisher_test(U = pleiotropy_maindata$pm_ld$gene, A = pm_high, B = gene_list$gene_22)) %>% rbindlist
-
-fisher_test_list_pm
-
-pn_high <- pleiotropy_maindata$pn_ld[pleio_class3 == "High pleiotropy"]$gene
-fisher_test_list_pn <- list(gene_MHC = fisher_test(U = pleiotropy_maindata$pn_ld$gene, A = pn_high, B = gene_list$gene_MHC),
-                            gene_16 = fisher_test(U = pleiotropy_maindata$pn_ld$gene, A = pn_high, B = gene_list$gene_16),
-                            gene_17 = fisher_test(U = pleiotropy_maindata$pn_ld$gene, A = pn_high, B = gene_list$gene_17),
-                            gene_22 = fisher_test(U = pleiotropy_maindata$pn_ld$gene, A = pn_high, B = gene_list$gene_22)) %>% rbindlist
-
-fisher_test_list_pn
-
 
 ####################PCA analysis#####################--------------------
 #1 load data-----------------
@@ -678,7 +596,6 @@ table_all <- list(Duplication_logistic_OR = tab_dup_logit,
                   Duplication_group_diff = tab_dup_pc,
                   Duplication_increment = tab_dup_increment)
 
-table_all$Duplication_logistic_OR
 table_all$Duplication_group_diff
 table_all$Duplication_increment
 
@@ -914,7 +831,6 @@ head(preserve_wide)
 
 summary_result <- merge(cor_res, preserve_wide,  by = c("analysis", "metric"),  all = TRUE)
 head(summary_result)
-fwrite(summary_result, file = sprintf("%s/newGPS_rawGPS_correlations.csv", figure_file))
 
 analysis_order <- c("pnadjust", "polygenicity", "samplematch", "repro", "mafbin1", "mafbin2", "mafbin3")
 summary_result_format <- summary_result[analysis %in% analysis_order
@@ -922,7 +838,7 @@ summary_result_format <- summary_result[analysis %in% analysis_order
                                             rho = sprintf("%.2f", rho),
                                             high_overlap = sprintf("%.1f", retention_high * 100),
                                             low_overlap  = sprintf("%.1f", retention_low * 100))][ 
-                                              , analysis := factor(analysis, levels = analysis_order)][order(analysis, metric)]
+                                              , analysis := factor(analysis, levels = analysis_order)][order(analysis, metric)][-1]
 head(summary_result_format)
 summary_result_format[metric == "pm"]$metric <- "GPS-M"
 summary_result_format[metric == "pn"]$metric <- "GPS-N"
