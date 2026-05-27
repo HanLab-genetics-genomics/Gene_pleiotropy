@@ -19,8 +19,8 @@ options(warn = -1)
 
 #2 load data--------------------------
 load("pleiotropy_maindata.RData")
-#3 figure6--------------------------
-##figure6A-------------------------
+#3 figures--------------------------
+##Extended figure 9-------------------------
 library(genekitr); library(igraph); library(ggraph); library(patchwork); library(rrvgo); library(clusterProfiler)
 #BiocManager::install("org.Hs.eg.db")
 
@@ -61,107 +61,14 @@ treemapPlot(gobp_plot$pn10, overlap.labels = 0.99, force.print.labels = T,
             lowerbound.cex.labels = 0.01, border.lwds = c(0.8,0.4))
 
 lapply(list("pn10"), function(x){
-  pdf(file = sprintf("%s/figure6_bp_%s_enrich.pdf", figure_file, x), width=8, height=8)
+  pdf(file = sprintf("%s/ED9_bp_%s_enrich.pdf", figure_file, x), width=8, height=8)
   treemapPlot(gobp_plot[[x]], overlap.labels = 0.99, force.print.labels = T, 
               lowerbound.cex.labels = 0.01, border.lwds = c(0.8,0.4))
   dev.off()
 })
 
-##figure6B&6C-------------------------
-###load data-----------------
-chronos_data <- fread("CRISPRGeneEffect/CRISPRGeneEffect.csv")
-chronos_essential <- data.table(gene = names(chronos_data)[-1],
-                                essential_score = colMeans(chronos_data[,-1], na.rm = TRUE)) %>%
-  separate(gene, into = c("gene", "id"), sep = " ") %>% .[,-2] %>%
-  mutate(., essential_num = apply(chronos_data[,-1], 2, function(x){sum(x < -1)})) %>%
-  mutate(., essential_chronos = ifelse(essential_num >= 1, 1, 2))
-
-GES_data <- lapply(list("pn_ld", "pm_ld"), function(x, data = pleiotropy_maindata){
-  data_merge <- merge(data[[x]][, .(gene, pleio_class3, age_stage4)], chronos_essential, by = "gene", all.x = T) %>%
-    .[, GES := -essential_score]
-  return(data_merge)
-})
-
-names(GES_data) <- c("pn_ld", "pm_ld")
-
-###GESs across groups--------------------------
-GES_box_func <- function(data = hopsgene_ageburden_cut_genemetrics$pn_ld, x_label = "", 
-                         y_label = "Gene length (bp)" , group = "pleio_class3", x_var = "Gene length (bp)",
-                         x_text = c("Low", "Intermediate", "High"), color_value = pleio_color,
-                         stat_test = test, test_list = c("Low pleiotropy", "High pleiotropy"), stat_name){
-  
-  plot_data <- data[, .(median = sapply(.SD, function(x) as.numeric(mean(x, na.rm = TRUE)))), by = group, .SDcols = x_var, with = T] 
-  
-  plot <- ggplot() + theme_bw() +
-    stat_boxplot(data = data, aes(x = !!sym(group), y = !!sym(x_var)), geom ='errorbar', width = 0.2) +
-    #geom_jitter(data = data, aes(x = !!sym(group), y = !!sym(x_var), fill = !!sym(group),
-    #                color = !!sym(group)), width = 0.4, size = 0.2, alpha = 0.2) +
-    geom_boxplot(data = data, aes(x = !!sym(group), y = !!sym(x_var), fill = !!sym(group)),
-                 color="grey50", lwd = 0.6, outlier.alpha = 0.3) +
-    geom_signif(data = data, aes(x = !!sym(group), y = !!sym(x_var)),
-                comparisons = list(test_list), color = "grey20",
-                map_signif_level = TRUE,
-                annotations = stat_test[[stat_name]]) +
-    geom_point(data = plot_data, aes(x = !!sym(group), y = median), color = "grey20", size = 2.5) +
-    geom_line(data = plot_data, aes(x = !!sym(group), y = median, group = 1), 
-              linetype = "dashed", color = "grey20") +
-    scale_color_manual(values = color_value) +
-    scale_fill_manual(values = color_value) +
-    labs(x=x_label, y= y_label) +
-    theme(text = element_text(size = 12, color = "black", face = "bold"),
-          legend.position = "none",
-          axis.title.y = element_text(size = 15, face = "bold"), 
-          axis.title.x = element_text(size = 15, face = "bold"), 
-          axis.text = element_text(size = 12, color = "black", face = "bold"), 
-          axis.ticks = element_blank(), axis.line = element_line(colour = "grey50"),
-          panel.grid = element_blank(), panel.grid.minor = element_blank(),
-          panel.border = element_blank(), 
-          panel.grid.major = element_blank(),
-          axis.line.y.right = element_blank(),
-          axis.text.y.right = element_blank()) +
-    scale_x_discrete(labels = x_text) +
-    scale_y_break(c(10e-4, 10e-3), scales = 5) +
-    scale_y_log10(breaks = c(10e-4, 10e-3,10e-2, 10e-1, 1, 10),
-                  labels = trans_format("log10", math_format(10^.x))) 
-  
-  return(list(plot_data = plot_data, plot = plot))
-}
-
-test <- list(
-  ges_pleio_n = pairwise.wilcox.test(GES_data$pn_ld$GES, 
-                                     GES_data$pn_ld$pleio_class3, 
-                                     p.adjust.method = "fdr")$p.value[2,1] %>% sprintf("%.2e", .), 
-  ges_pleio_m = pairwise.wilcox.test(GES_data$pm_ld$GES, 
-                                     GES_data$pm_ld$pleio_class3, 
-                                     p.adjust.method = "fdr")$p.value[2,1] %>% sprintf("%.2e", .), 
-  ges_age = pairwise.wilcox.test(GES_data$pn_ld$GES, 
-                                 GES_data$pn_ld$age_stage4, 
-                                 p.adjust.method = "fdr")$p.value[3,1] %>% sprintf("%.2e", .) 
-)
-
-GES_box <- list(pleio_n = GES_box_func(data = GES_data$pn_ld, color_value = pleio_color,
-                                       y_label = "Gene essential scores", x_var = "GES",
-                                       stat_name = "ges_pleio_n"),
-                pleio_m = GES_box_func(data = GES_data$pm_ld, color_value = pleio_color,
-                                       y_label = "Gene essential scores", x_var = "GES",
-                                       stat_name = "ges_pleio_m"),
-                age_n = GES_box_func(data = GES_data$pn_ld[!is.na(age_stage4),], group = "age_stage4",
-                                     color_value = age_color, y_label = "Gene essential scores", x_var = "GES", 
-                                     x_text = x_text, test_list = age_test, stat_name = "ges_age")) 
-
-
-GES_box$pleio_n$plot
-GES_box$age_n$plot
-
-ggsave(plot = GES_box$pleio_n$plot, width = 3.2, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure6_ges_pn.pdf",figure_file))
-ggsave(plot = GES_box$age_n$plot, width = 4.8, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure6_ges_age.pdf",figure_file))
-
-
-
-##figure6D-------------------------
-library(dorothea); library(OmnipathR); library(decoupleR)
+##progeny pathways-------------------------
+library(dorothea); library(OmnipathR); library(decoupleR); library(progeny)
 progeny <- progeny::model_human_full %>%
   group_by(pathway) %>%
   slice_min(order_by = p.value, n = 500)
@@ -250,9 +157,9 @@ progeny_plot_list <- list(
 progeny_plot_list$pn$plot
 
 ggsave(plot = progeny_plot_list$pn$plot, width = 8, height = 7, device = cairo_pdf,
-       filename = sprintf("%s/figure6_progeny_pn.pdf",figure_file))
+       filename = sprintf("%s/ED9_progeny_pn.pdf",figure_file))
 
-##figure6E--------------------------
+##kegg with luca--------------------------
 kegg_func <- function(data = pleiotropy_maindata$pn_ld, pleio_group = 10){
   
   kegg_pleio10 <- genORA(id = data[pleio10 == pleio_group, gene],
@@ -301,7 +208,7 @@ keggluca_plot_func <- function(data = kegg_list$pn10, plot_height = 10, plot_nam
     xlab("Enrichment")
   
   ggsave(plot = plot, width = 10, height = plot_height, device = cairo_pdf,
-         filename = sprintf("%s/figure6_kegg_luca_%s.pdf", figure_file, plot_name))
+         filename = sprintf("%s/ED9_kegg_luca_%s.pdf", figure_file, plot_name))
 }
 
 keggluca_plot_list <- list(
