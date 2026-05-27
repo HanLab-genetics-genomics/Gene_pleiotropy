@@ -43,8 +43,8 @@ Input datasets and processed files required to reproduce the results.
 | **Datasets for [Functional characterization]** |  | 
 | Gene effect score (unrar first) |  [CRISPRGeneEffect](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/CRISPRGeneEffect) |
 | Metabolic processes in Last Universal Common Ancestor (LUCA) |  [LUCA](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/41559_2024_2461_MOESM4_ESM.tsv) |
-| **Datasets for [GPSs for sensitivity analysis]** |  [GPS](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/GPS) |
-| **Datasets for [reproduction-GPS ]** |  [GPS using a restricted panel of reproduction and pre-reproductive survival traits](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/hopsgene_repro_cut.RData) |
+| **GPSs for sensitivity analysis** |  [GPS](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/GPS) |
+| **GPS using a restricted panel of reproduction and pre-reproductive survival traits** |  [hopsgene_repro_cut.RData](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/hopsgene_repro_cut.RData) |
 | **Datasets for [AgingGPS]** |  [AgingGPS](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/AgingGPS) |
 | **Datasets for [Duplication]** |  [Duplication](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/Duplication) |
 
