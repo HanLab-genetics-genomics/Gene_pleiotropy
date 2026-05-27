@@ -1,6 +1,6 @@
 #1 load packages and set variables-------
 setwd("/path/to/Gene_pleiotropy-main/Data")
-figure_file <- "/path/to/Gene_pleiotropy-main/Output/Figure6"
+figure_file <- "/path/to/Gene_pleiotropy-main/Output/Functional_characterization"
 if (!dir.exists(figure_file)) {
   dir.create(figure_file, recursive = TRUE)
 }
@@ -23,7 +23,6 @@ load("pleiotropy_maindata.RData")
 ##Extended figure 9-------------------------
 library(genekitr); library(igraph); library(ggraph); library(patchwork); library(rrvgo); library(clusterProfiler)
 #BiocManager::install("org.Hs.eg.db")
-
 ego_bp <- list(pm10 = genORA(id = pleiotropy_maindata$pm_ld[pleio10 == 10, gene], 
                              geneset = geneset::getGO(org = "human",ont = "bp")),
                pm1 = genORA(id = pleiotropy_maindata$pm_ld[pleio10 == 1, gene], 
