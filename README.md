@@ -80,7 +80,7 @@ unrar x Data/RandomForest/forest_13var_seed123_250114.part01.rar Data/RandomFore
 nrar x Data/mediation_list_pn.rar Data
 unrar x Data/genehancer_all.rar Data
 unrar x Data/CRISPRGeneEffect/CRISPRGeneEffect.part01.rar Data/CRISPRGeneEffect
-unrar x Data/AgingGPS/AgingGPS.part01.rar Data/AgingGPS
+unrar x Data/AgingGPS/AgingGPS.part1.rar Data/AgingGPS
 unrar x Data/Duplication/Duplication.part01.rar Data/Duplication
 ```
 - **Install the required R packages by running "[1.Install_packages.R](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/1.Install_packages.R)**
