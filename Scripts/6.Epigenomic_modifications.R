@@ -23,7 +23,7 @@ options(warn = -1)
 
 #2 load data--------------------------
 load("pleiotropy_maindata.RData")
-#3 figure5--------------------
+#3 figures--------------------
 ##enrichment by lola----------------- 
 ###Extract gene coordinates ± 1000bp (could skip and load the data provided)-------------------
 genecoordinate_func <- function(x, data = pleiotropy_maindata$pm_ld, 
@@ -174,7 +174,7 @@ lola_enrichment <- list(
   
 )
 
-###figrue5A&5B: extract enrichment results by lola for Roadmap epigenomics region using beeswarm plot----------------------
+###figures: extract enrichment results by lola for Roadmap epigenomics region using beeswarm plot----------------------
 Roadmapepi_enrich_list <- list(
   pm = fread(sprintf("%s/pm_topbottom20_lola/col_roadmap_epigenomics.tsv", lola_out_file)) %>% .[qValue < 0.05,], 
   pn = fread(sprintf("%s/pn_topbottom20_lola/col_roadmap_epigenomics.tsv", lola_out_file)) %>% .[qValue < 0.05,],
@@ -238,9 +238,9 @@ roadmapepi_beeplot$pn_epi_bottom20
 roadmapepi_beeplot$pn_epi_top20
 
 ggsave(plot = roadmapepi_beeplot$pn_epi_top20, width = 10, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure5_roadmap_pn_top20.pdf",figure_file))
+       filename = sprintf("%s/figure3_roadmap_pn_top20.pdf",figure_file))
 ggsave(plot = roadmapepi_beeplot$pn_epi_bottom20, width = 3, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure5_roadmap_pn_bottom20.pdf",figure_file))
+       filename = sprintf("%s/figure3_roadmap_pn_bottom20.pdf",figure_file))
 ##3D genomic features---------------
 ###lola enrichment for 3d genomic features-------------------
 regionDB = loadRegionDB("LOLA3D")
@@ -321,11 +321,11 @@ plot_compartment <- ggplot(data = plot_data,
 
 plot_compartment
 ggsave(plot = plot_compartment, width = 5, height = 5, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_compartment_20.pdf",figure_file))
+       filename = sprintf("%s/figure3_enrich_compartment_20.pdf",figure_file))
 
 
 
-####figure5F&5G: plot heatmap for loop, atac and domain--------------------------
+####figures: plot heatmap for loop, atac and domain--------------------------
 pm_results_series <- lapply(as.list(c(10,20,30,40,50)), function(x){
   file_path <- sprintf("%s/pm_topbottom%s_3d/allEnrichments.tsv", lola_out_file, x)
   data <- fread(file_path) %>%
@@ -451,22 +451,9 @@ loop_domian_atac_heatmap$age4_loop$plot
 
 
 ggsave(plot = loop_domian_atac_heatmap$pn_loop$plot, width = 4, height = 4, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_loop_pn_heatmap.pdf",figure_file))
+       filename = sprintf("%s/figure3_enrich_loop_pn_heatmap.pdf",figure_file))
 ggsave(plot = loop_domian_atac_heatmap$pn_domian$plot, width = 4, height = 4, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_domain_pn_heatmap.pdf",figure_file))
+       filename = sprintf("%s/figure3_enrich_domain_pn_heatmap.pdf",figure_file))
 ggsave(plot = loop_domian_atac_heatmap$pn_atac$plot, width = 4, height = 4, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_atac_pn_heatmap.pdf",figure_file)) 
+       filename = sprintf("%s/figure3_enrich_atac_pn_heatmap.pdf",figure_file)) 
 
-ggsave(plot = loop_domian_atac_heatmap$age4_loop$plot, width = 4, height = 4, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_loop_age_heatmap.pdf",figure_file))
-ggsave(plot = loop_domian_atac_heatmap$age4_domian$plot, width = 4, height = 4, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_domain_age_heatmap.pdf",figure_file))
-ggsave(plot = loop_domian_atac_heatmap$age4_atac$plot, width = 4, height = 4, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_atac_age_heatmap.pdf",figure_file)) 
-
-ggsave(plot = loop_domian_atac_heatmap$pm_loop$plot, width = 4, height = 4, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_loop_pm_heatmap.pdf",figure_file))
-ggsave(plot = loop_domian_atac_heatmap$pm_domian$plot, width = 4, height = 4, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_domain_pm_heatmap.pdf",figure_file))
-ggsave(plot = loop_domian_atac_heatmap$pm_atac$plot, width = 4, height = 4, device = cairo_pdf,
-       filename = sprintf("%s/figure5_enrich_atac_pm_heatmap.pdf",figure_file)) 
