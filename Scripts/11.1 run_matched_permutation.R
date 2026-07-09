@@ -23,7 +23,7 @@
 
 
 setwd("/path/to/Gene_pleiotropy-main/Data")
-outdir <- "/path/to/Gene_pleiotropy-main/Output/permutation"
+outdir <- "/path/to/Gene_pleiotropy-main/Data/permutation"
 if (!dir.exists(outdir)) {
   dir.create(outdir, recursive = TRUE)
 }
