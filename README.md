@@ -99,7 +99,7 @@ Each script begins with a line such as: setwd("/path/to/Gene_pleiotropy-main/Dat
   
 Each script also defines an output path, for example: figure_file <- "/path/to/Gene_pleiotropy-main/Output/Figure1". You can edit this to change the directory where output files will be saved.
 
-## Running on your data
+### Running on your data
 Set the working directory to the [**Data**](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Data/) folder at the top of each script [setwd("/path/to/Gene_pleiotropy-main/Data")].
 
 - **Reproduce figures**: Run the scripts provided for each main figure. These scripts will load the relevant datasets from the Data folder and output the final plots.
@@ -110,7 +110,7 @@ Set the working directory to the [**Data**](https://github.com/HanLab-genetics-g
 Runtime: approximately 2-3 hours for all scripts combined.  
 Note: Runtimes refer to a standard laptop/desktop with required packages installed and the provided input files.
 
-## Notes for matched-gene permutation analyses
+### Notes for matched-gene permutation analyses
 The matched-gene empirical null analyses are implemented in two scripts:
 
 1. [11.1 run_matched_permutation.R](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/11.1%20run_matched_permutation.R) generates matched control matrices for GPS-N and GPS-M.
@@ -135,5 +135,5 @@ Packages fail to install or load
 
 If you encounter any issues, please reach out, and we will resolve them promptly.
 
-### License
+## License
 This repository is made publicly available for peer review and reproducibility assessment. A formal open-source license will be added upon publication.
