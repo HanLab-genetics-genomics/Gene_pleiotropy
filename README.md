@@ -134,3 +134,6 @@ Packages fail to install or load
 - Ensure that you have a working internet connection and that CRAN/Bioconductor mirrors are reachable.
 
 If you encounter any issues, please reach out, and we will resolve them promptly.
+
+### License
+This repository is made publicly available for peer review and reproducibility assessment. A formal open-source license will be added upon publication.
