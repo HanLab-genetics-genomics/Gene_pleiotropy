@@ -14,6 +14,7 @@ Seven scripts (one per main figure) that generate the figures from the input dat
 * [AgingGPS](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/8.AgingGPS.R): Aging-specific pleiotropy scores.
 * [Duplication](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/9.Duplication.R): Gene pleiotropy and gene dupliation (supporting analyses).
 * [Other](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/10.Other.R): Supporting analyses in Supplementary Notes
+* [Matched-gene permutation analyses](https://github.com/HanLab-genetics-genomics/Gene_pleiotropy/blob/main/Scripts/11.2%20matched_permutation_analysis.R): Matched-gene permutation analyses in Supplementary Notes
 
 ### Data:
 Input datasets and processed files required to reproduce the results.
