@@ -12,8 +12,8 @@ options(warn = -1)
 
 
 # recheck the gene-level associations with GPS-----------------------
-universe_pn <- fread("/permutation/universe_pn.csv", na.strings = c("NA", ""))
-universe_pm <- fread("/permutation/universe_pm.csv", na.strings = c("NA", ""))
+universe_pn <- fread("permutation/universe_pn.csv", na.strings = c("NA", ""))
+universe_pm <- fread("permutation/universe_pm.csv", na.strings = c("NA", ""))
 head(universe_pn)
 
 # load matched matrices
@@ -113,15 +113,15 @@ matched_feature_test <- function(
   )
 }
 
-test_specs <- data.table(var = c("Euteleostomi", "Eutheria", "LOEUF", "LOEUF_class", "ifhsd2", "tau", "ifspecific", "GES", "GES_class",
+test_specs <- data.table(var = c("Euteleostomi", "Eutheria", "LOEUF_class", "ifhsd2", "ifspecific", "GES_class",
                                  "cis_egene", "cis_sgene", "iftf", "tf_sum", "ogee_connectivity"),
-                         type = c("binary", "binary", "continuous", "binary", "binary", "continuous", "binary","continuous", "binary",
+                         type = c("binary", "binary", "binary", "binary", "binary", "binary",
                                   "binary", "binary", "binary", "continuous", "continuous"),
-                         positive_level = c("TRUE", "TRUE", NA, "Intolerant", "Duplicates", NA, "Specific", NA, "Essentialty",
+                         positive_level = c("TRUE", "TRUE", "Intolerant", "Duplicates", "Specific", "Essentialty",
                                             "TRUE", "TRUE", "TRUE", NA, NA),
-                         stat = c("mean", "mean", "median", "mean", "mean", "median", "mean", "median", "mean",
+                         stat = c("mean", "mean", "mean", "mean", "mean", "mean",
                                   "mean", "mean", "mean", "median", "median"),
-                         direction = c("greater", "less", "less", "greater", "less", "less", "less", "greater", "greater",
+                         direction = c("greater", "less", "greater", "less", "less", "greater",
                                        "greater", "greater", "greater", "greater", "greater"))
 test_specs
 
