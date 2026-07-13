@@ -2,28 +2,15 @@
 # Notes for running matched permutation analyses
 # ============================================================
 
-# This script was tested on a Linux server using 18 parallel workers.
+# This script was ran using 18 parallel workers.
 # The permutation step can be computationally intensive, especially when
 # using the full gene universe and 1,000 matched permutations.
 
-# By default, the script is designed for Linux command-line execution. For
-# Windows or RStudio environments, the parallel backend can be switched from
-# future::multicore to future::multisession. However, the Windows/RStudio
-# configuration has not been extensively tested in this study.
-
-# We recommend running this script as a background job on a Linux server.
-# For example:
-
-# nohup Rscript /path/to/Gene_pleiotropy-main/Script/run_matched_permutation.R \
-# > /path/to/Gene_pleiotropy-main/Output/permutation/run_matched_permutation.log 2>&1 &
-
-# Please make sure that the output directory exists before running the
-# command above.
 # ============================================================
 
 
 setwd("/path/to/Gene_pleiotropy-main/Data")
-outdir <- "/path/to/Gene_pleiotropy-main/Data/permutation"
+outdir <- "/path/to/Gene_pleiotropy-main/Output/permutation"
 if (!dir.exists(outdir)) {
   dir.create(outdir, recursive = TRUE)
 }
@@ -32,9 +19,8 @@ library(data.table)
 library(future)
 library(future.apply)
 
-
-universe_pn <- fread("/permutation/universe_pn.csv", na.strings = c("NA", ""))
-universe_pm <- fread("/permutation/universe_pm.csv", na.strings = c("NA", ""))
+universe_pn <- fread("permutation/universe_pn.csv", na.strings = c("NA", ""))
+universe_pm <- fread("permutation/universe_pm.csv", na.strings = c("NA", ""))
 
 
 make_matched_matrix <- function(universe, high_col, outfile_prefix, n_perm = 1000, workers = 18, seed = 123,
@@ -153,7 +139,7 @@ matched_ctrl_mat_pn <- make_matched_matrix(
   n_perm = 1000,
   workers = 18,
   seed = 123,
-  parallel_strategy = "multicore"
+  parallel_strategy = "multisession"
 )
 
 matched_ctrl_mat_pm <- make_matched_matrix(
@@ -163,5 +149,5 @@ matched_ctrl_mat_pm <- make_matched_matrix(
   n_perm = 1000,
   workers = 18,
   seed = 123,
-  parallel_strategy = "multicore"
+  parallel_strategy = "multisession"
 )
