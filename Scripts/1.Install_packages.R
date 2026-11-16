@@ -7,7 +7,7 @@ pkgs <- c("data.table", "dplyr", "ggplot2", "corrplot", "ggpubr", "Gmisc", "open
           "genekitr", "igraph", "ggraph", "rrvgo", "clusterProfiler", "enrichplot", 
           "janitor", "binom", "glue", "lawstat", "weights", "epitools", "DescTools", "optparse", "MASS","mediation", "org.Hs.eg.db",
           "GOSemSim", "DOSE", "tidygraph", "scatterpie", "e1071", "ggrepel", "broom", "purrr", "effectsize", "tibble",
-          "STRINGdb", "ReactomePA", "forcats", "ggstatsplot", "progeny"，
+          "STRINGdb", "ReactomePA", "forcats", "ggstatsplot", "progeny",
          "future", "future.apply")
 
 miss_pkgs <- setdiff(pkgs, installed.packages()[, "Package"])
