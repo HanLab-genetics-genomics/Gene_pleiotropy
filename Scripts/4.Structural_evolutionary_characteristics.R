@@ -363,7 +363,7 @@ head(chronos_essential)
 usedata <- merge(pleiotropy_maindata$pn_ld, chronos_essential[, .(gene, essential_score)], by = "gene", all.x = T) %>%
   .[, GES := -essential_score] %>%
   .[, GES_class := case_when(is.na(essential_score)   ~ NA_character_,
-                             essential_score <= -1   ~ "Essential",
+                             essential_score < -1   ~ "Essential",
                              TRUE               ~ "Non_essential")] 
 
 head(usedata)
