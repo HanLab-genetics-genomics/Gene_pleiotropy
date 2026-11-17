@@ -495,19 +495,15 @@ ggsave(plot = percent_duplicatedgenes$age, width = 4.8, height = 5, device = cai
 
 ###p for trend across pleio and age groups-----------------
 library(rstatix)
-xtab <- as.table(rbind(
-  c(table(pleiotropy_maindata$pn_ld[, .(pleio_class3, ifhsd2)])[,"Duplicates"]),
-  c(table(pleiotropy_maindata$pn_ld[, .(pleio_class3)]))
-))
-xtab
-prop_trend_test(xtab)$p %>% sprintf("%.2e", .) #"1.22e-89"
 
-xtab <- as.table(rbind(
-  c(table(pleiotropy_maindata$pn_ld[, .(age_stage4, ifhsd2)])[,"Duplicates"]),
-  c(table(pleiotropy_maindata$pn_ld[, .(age_stage4)]))
-))
+xtab <- with(pleiotropy_maindata$pn_ld, 
+             table(ifhsd2, pleio_class3, useNA = "no"))
 xtab
-prop_trend_test(xtab)$p %>% sprintf("%.2e", .) #"0.00e+00"
+prop_trend_test(xtab)$p %>% sprintf("%.2e", .) 
+
+xtab <- with(pleiotropy_maindata$pn_ld, table(ifhsd2, age_stage4, useNA = "no"))
+xtab
+sprintf("%.2e", rstatix::prop_trend_test(xtab)$p)
 
 ###hsd_pleio_pn-----------------------
 hsd_box_func <- function(data = pleiotropy_maindata$pn_ld, x_label = "", scale_y = F,
