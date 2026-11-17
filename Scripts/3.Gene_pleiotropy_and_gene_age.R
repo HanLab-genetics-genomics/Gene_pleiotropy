@@ -531,26 +531,22 @@ ggsave(plot = pleioage_mirrorbar_pn$plot, width = 8, height = 6, device = cairo_
 
 ###p for trend
 library(rstatix)
-xtab <- as.table(rbind(
-  c(table(pleiotropy_maindata$pn_ld[, .(age_stage7, pleio_class3)])[,"Low pleiotropy"]),
-  c(table(pleiotropy_maindata$pn_ld[, .(age_stage7)]))
-))
-prop_trend_test(xtab)$p %>% sprintf("%.2e", .)
+tab <- with(pleiotropy_maindata$pn_ld, table(age_stage7, pleio_class3, useNA = "no"))
+xtab <- cbind(Low = tab[, "Low pleiotropy"], Non_low = rowSums(tab) - tab[, "Low pleiotropy"])
+xtab
+sprintf("%.2e", rstatix::prop_trend_test(xtab)$p)
 
-xtab <- as.table(rbind(
-  c(table(pleiotropy_maindata$pn_ld[, .(age_stage7, pleio_class3)])[,"High pleiotropy"]),
-  c(table(pleiotropy_maindata$pn_ld[, .(age_stage7)]))
-))
-prop_trend_test(xtab)$p %>% sprintf("%.2e", .)
+tab <- with(pleiotropy_maindata$pn_ld, table(age_stage7, pleio_class3, useNA = "no"))
+xtab <- cbind(Low = tab[, "High pleiotropy"], Non_low = rowSums(tab) - tab[, "High pleiotropy"])
+xtab
+sprintf("%.2e", rstatix::prop_trend_test(xtab)$p)
 
-xtab <- as.table(rbind(
-  c(table(pleiotropy_maindata$pm_ld[, .(age_stage7, pleio_class3)])[,"Low pleiotropy"]),
-  c(table(pleiotropy_maindata$pm_ld[, .(age_stage7)]))
-))
-prop_trend_test(xtab)$p %>% sprintf("%.2e", .)
+tab <- with(pleiotropy_maindata$pm_ld, table(age_stage7, pleio_class3, useNA = "no"))
+xtab <- cbind(Low = tab[, "Low pleiotropy"], Non_low = rowSums(tab) - tab[, "Low pleiotropy"])
+xtab
+sprintf("%.2e", rstatix::prop_trend_test(xtab)$p)
 
-xtab <- as.table(rbind(
-  c(table(pleiotropy_maindata$pm_ld[, .(age_stage7, pleio_class3)])[,"High pleiotropy"]),
-  c(table(pleiotropy_maindata$pm_ld[, .(age_stage7)]))
-))
-prop_trend_test(xtab)$p %>% sprintf("%.2e", .)
+tab <- with(pleiotropy_maindata$pm_ld, table(age_stage7, pleio_class3, useNA = "no"))
+xtab <- cbind(Low = tab[, "High pleiotropy"], Non_low = rowSums(tab) - tab[, "High pleiotropy"])
+xtab
+sprintf("%.2e", rstatix::prop_trend_test(xtab)$p)
