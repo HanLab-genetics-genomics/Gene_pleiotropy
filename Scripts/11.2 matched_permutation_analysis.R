@@ -16,6 +16,10 @@ universe_pn <- fread("permutation/universe_pn.csv", na.strings = c("NA", ""))
 universe_pm <- fread("permutation/universe_pm.csv", na.strings = c("NA", ""))
 head(universe_pn)
 
+for (u in list(universe_pn, universe_pm)) {
+  u[is.na(age_stage7), `:=`(Euteleostomi = NA, Eutheria = NA)]
+}
+
 # load matched matrices
 matched_ctrl_mat_pn <- readRDS(file.path(outdir, "matched_ctrl_mat_pn.rds"))
 matched_ctrl_mat_pm <- readRDS(file.path(outdir, "matched_ctrl_mat_pm.rds"))
@@ -170,6 +174,7 @@ res_pm
 res_all <- rbind(res_pn, res_pm)
 head(res_all)
 setDT(res_all)
+res_all[, bh_q := p.adjust(empirical_p, method = "BH"), by = GPS_metric]
 
 fmt_num <- function(x) {sprintf("%.3f", x)}
 fmt_p <- function(p) {ifelse(
