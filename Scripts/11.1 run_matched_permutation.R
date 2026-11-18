@@ -115,7 +115,8 @@ make_matched_matrix <- function(universe, high_col, outfile_prefix, n_perm = 100
   matched_ctrl_mat <- future_sapply(
     candidate_ids,
     function(candidates) {
-      sample(candidates, size = n_perm, replace = TRUE)
+      positions <- sample.int(length(candidates), size = n_perm, replace = TRUE)
+      candidates[positions]
     },
     future.seed = TRUE
   )
